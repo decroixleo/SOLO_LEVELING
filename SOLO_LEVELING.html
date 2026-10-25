@@ -621,7 +621,7 @@
         <div class="auth-box">
             <div class="auth-title"><i class="fa-solid fa-shield-halved"></i> IDENTIFICATION DU JOUEUR</div>
             
-            <div id="auth-error" style="color: var(--danger-red); font-size: 0.8rem; margin-bottom: 10px; display: none; background: rgba(255,0,0,0.1); padding: 8px; border: 1px solid var(--danger-red);"></div>
+            <div id="auth-error" style="color: var(--danger-red); font-size: 0.85rem; margin-bottom: 12px; display: none; background: rgba(255,0,0,0.15); padding: 10px; border: 1px solid var(--danger-red); text-align: left; word-break: break-word;"></div>
 
             <!-- FORM 1 : SE CONNECTER -->
             <div class="auth-section-title"><i class="fa-solid fa-right-to-bracket"></i> DÉJÀ UN COMPTE ?</div>
@@ -1069,7 +1069,7 @@
             }
         };
 
-        // SEPARATED AUTH LOGIC
+        // SEPARATED AUTH LOGIC WITH DETAILED ERROR MESSAGES
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -1087,7 +1087,7 @@
                 btn.innerText = "SE CONNECTER";
 
                 if (error) {
-                    errDiv.innerText = error.message;
+                    errDiv.innerText = "Erreur : " + error.message;
                     errDiv.style.display = 'block';
                 } else if (data.user) {
                     currentUser = data.user;
@@ -1097,7 +1097,7 @@
             } catch (err) {
                 btn.disabled = false;
                 btn.innerText = "SE CONNECTER";
-                errDiv.innerText = err.message;
+                errDiv.innerText = "Erreur réseau : " + err.message;
                 errDiv.style.display = 'block';
             }
         }
@@ -1113,23 +1113,40 @@
             btn.disabled = true;
             btn.innerText = "CRÉATION EN COURS...";
 
+            if (password.length < 6) {
+                btn.disabled = false;
+                btn.innerText = "CRÉER MON COMPTE";
+                errDiv.innerText = "Erreur : Le mot de passe doit faire au moins 6 caractères.";
+                errDiv.style.display = 'block';
+                return;
+            }
+
             try {
                 const { data, error } = await supabase.auth.signUp({ email, password });
                 btn.disabled = false;
                 btn.innerText = "CRÉER MON COMPTE";
 
                 if (error) {
-                    errDiv.innerText = error.message;
+                    errDiv.innerText = "Erreur : " + error.message;
                     errDiv.style.display = 'block';
                 } else if (data.user) {
-                    currentUser = data.user;
-                    document.getElementById('auth-screen').style.display = 'none';
-                    await loadUserData();
+                    // Check if confirmation email is required by Supabase
+                    if (data.session === null && data.user.identities && data.user.identities.length === 0) {
+                        errDiv.innerText = "Cet e-mail existe déjà. Essayez de vous connecter.";
+                        errDiv.style.display = 'block';
+                    } else if (data.session === null) {
+                        errDiv.innerText = "Un e-mail de confirmation a été envoyé. Veuillez valider votre boîte mail.";
+                        errDiv.style.display = 'block';
+                    } else {
+                        currentUser = data.user;
+                        document.getElementById('auth-screen').style.display = 'none';
+                        await loadUserData();
+                    }
                 }
             } catch (err) {
                 btn.disabled = false;
                 btn.innerText = "CRÉER MON COMPTE";
-                errDiv.innerText = err.message;
+                errDiv.innerText = "Erreur réseau : " + err.message;
                 errDiv.style.display = 'block';
             }
         }
