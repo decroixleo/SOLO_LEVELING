@@ -177,7 +177,7 @@
 
         nav {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 6px;
             width: 100%;
         }
@@ -500,6 +500,37 @@
             align-items: center;
         }
 
+        /* STYLES DESKTOP & PHOTO DE PROFIL */
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .avatar-frame {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue);
+            object-fit: cover;
+            background: rgba(0, 30, 60, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            color: var(--neon-cyan);
+            overflow: hidden;
+        }
+
+        .avatar-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         footer {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
@@ -648,7 +679,10 @@
                 <h1>Système // Programme Entraînement</h1>
             </div>
             <nav>
-                <button class="nav-btn active" onclick="switchTab('status')">
+                <button class="nav-btn active" onclick="switchTab('profile')">
+                    <i class="fa-solid fa-user-gear"></i> Profil
+                </button>
+                <button class="nav-btn" onclick="switchTab('status')">
                     <i class="fa-solid fa-user"></i> Statut
                 </button>
                 <button class="nav-btn" onclick="switchTab('quest')">
@@ -666,7 +700,83 @@
 
         <main class="system-frame">
 
-            <div id="tab-status" class="tab-content active">
+            <!-- ONGLET PROFIL DÉTAILLÉ -->
+            <div id="tab-profile" class="tab-content active">
+                <div class="section-header">
+                    <span>Profil Joueur & Récapitulatif Général</span>
+                    <i class="fa-solid fa-id-card"></i>
+                </div>
+
+                <div class="grid-2col">
+                    <div>
+                        <!-- Carte Identité du Joueur -->
+                        <div class="avatar-container">
+                            <div class="avatar-frame" id="avatar-display">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <label class="btn-quest-action" style="cursor: pointer;">
+                                <i class="fa-solid fa-camera"></i> Modifier la photo
+                                <input type="file" id="input-avatar" accept="image/*" style="display: none;" onchange="uploadAvatar(event)">
+                            </label>
+                        </div>
+
+                        <form onsubmit="saveProfileInfo(event)" style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
+                            <div class="form-group">
+                                <label>Pseudo du Joueur</label>
+                                <input type="text" class="form-control" id="profile-username-input" placeholder="ex: Sung Jin-Woo" required>
+                            </div>
+                            <button type="submit" class="btn-quest-action" style="width: 100%;">Mettre à jour le Pseudo</button>
+                        </form>
+
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
+                            <div class="info-row">
+                                <span class="label">Pseudo :</span>
+                                <span class="val" id="profile-username-display" style="color: var(--neon-blue);">Joueur Inconnu</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Niveau :</span>
+                                <span class="val" id="profile-level-display">1</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Rang Officiel :</span>
+                                <span class="val" id="profile-rank-display" style="color: var(--gold);">Rang Civile</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <!-- Récapitulatif Général des Séances et du Poids -->
+                        <div class="section-header" style="font-size: 0.9rem;">
+                            <span>Vue d'ensemble du Chasseur</span>
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
+                            <h4 style="font-family: 'Orbitron'; font-size: 0.85rem; color: var(--gold); margin-bottom: 8px;">Programme Hebdomadaire (${state.routines.length} séances) :</h4>
+                            <div id="profile-routines-summary"></div>
+                        </div>
+
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
+                            <h4 style="font-family: 'Orbitron'; font-size: 0.85rem; color: var(--neon-cyan); margin-bottom: 8px;">Physique & Poids :</h4>
+                            <div class="info-row">
+                                <span class="label">Dernier Poids :</span>
+                                <span class="val" id="profile-weight-display">-- kg</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Masse Maigre :</span>
+                                <span class="val" id="profile-lean-display">-- kg</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Objectif Cible :</span>
+                                <span class="val" id="profile-target-display">-- kg / --% MG</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET STATUT -->
+            <div id="tab-status" class="tab-content">
                 <div class="grid-2col">
                     <div>
                         <div class="section-header">
@@ -729,6 +839,7 @@
                 </div>
             </div>
 
+            <!-- ONGLET QUÊTE -->
             <div id="tab-quest" class="tab-content">
                 <div class="quest-box">
                     <div style="text-align: center; border-bottom: 2px double var(--neon-cyan); padding-bottom: 10px; margin-bottom: 15px;">
@@ -913,6 +1024,7 @@
                 </div>
             </div>
 
+            <!-- ONGLET PESÉE -->
             <div id="tab-weighin" class="tab-content">
                 <div class="section-header">
                     <span>Composition Corporelle & Objectifs (+500 EXP)</span>
@@ -1025,6 +1137,8 @@
         const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
         let state = {
+            username: "Chasseur",
+            avatarUrl: "",
             level: 1,
             exp: 0,
             maxExp: 100,
@@ -1064,6 +1178,8 @@
 
         function resetDefaultState() {
             state = {
+                username: "Chasseur",
+                avatarUrl: "",
                 level: 1,
                 exp: 0,
                 maxExp: 100,
@@ -1230,6 +1346,31 @@
             } catch(e) {}
         }
 
+        function saveProfileInfo(e) {
+            e.preventDefault();
+            const val = document.getElementById('profile-username-input').value.trim();
+            if (val) {
+                state.username = val;
+                saveUserData();
+                updateUI();
+                logMessage(`Pseudo mis à jour : ${state.username}`);
+            }
+        }
+
+        function uploadAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    state.avatarUrl = e.target.result;
+                    saveUserData();
+                    updateUI();
+                    logMessage("Photo de profil mise à jour.");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function getTodayRoutine() {
             const today = new Date().getDay();
             if (!state.routines) return null;
@@ -1271,6 +1412,31 @@
         }
 
         function updateUI() {
+            // Mise à jour de l'onglet Profil
+            document.getElementById('profile-username-input').value = state.username || "Chasseur";
+            document.getElementById('profile-username-display').innerText = state.username || "Chasseur";
+            document.getElementById('profile-level-display').innerText = state.level;
+            document.getElementById('profile-rank-display').innerText = getRank(state.level);
+
+            const avatarDisplay = document.getElementById('avatar-display');
+            if (state.avatarUrl) {
+                avatarDisplay.innerHTML = `<img src="${state.avatarUrl}" alt="Avatar">`;
+            } else {
+                avatarDisplay.innerHTML = `<i class="fa-solid fa-user"></i>`;
+            }
+
+            // Récapitulatif séances dans Profil
+            const routinesSummary = document.getElementById('profile-routines-summary');
+            if (state.routines && state.routines.length > 0) {
+                routinesSummary.innerHTML = state.routines.map(r => {
+                    const days = r.days ? r.days.map(d => dayNames[d]).join(', ') : "Aucun jour";
+                    return `<div style="font-size:0.8rem; color:#a0c0d0; margin-bottom:4px;">• <strong style="color:#fff;">${r.name}</strong> (${days})</div>`;
+                }).join('');
+            } else {
+                routinesSummary.innerHTML = `<div style="font-size:0.8rem; color:#72a8c8;">Aucune séance configurée</div>`;
+            }
+
+            // Statut Général
             document.getElementById('player-level').innerText = state.level;
             document.getElementById('player-rank').innerText = getRank(state.level);
 
@@ -1312,6 +1478,10 @@
                 document.getElementById('display-last-weight').innerText = `${latest.weight} kg (${latest.bodyFat}%)`;
                 document.getElementById('display-lean-mass').innerText = `${latest.leanMass} kg`;
 
+                document.getElementById('profile-weight-display').innerText = `${latest.weight} kg (${latest.bodyFat}% MG)`;
+                document.getElementById('profile-lean-display').innerText = `${latest.leanMass} kg`;
+                document.getElementById('profile-target-display').innerText = `${state.targetWeight} kg / ${state.targetBodyFat}% MG`;
+
                 document.getElementById('label-goal-weight').innerText = `${latest.weight} / ${state.targetWeight} kg`;
                 let weightPct = (initial.weight !== state.targetWeight) ? ((latest.weight - initial.weight) / (state.targetWeight - initial.weight)) * 100 : 100;
                 document.getElementById('fill-goal-weight').style.width = `${Math.min(100, Math.max(0, weightPct))}%`;
@@ -1329,6 +1499,9 @@
             } else {
                 document.getElementById('display-last-weight').innerText = "-- kg";
                 document.getElementById('display-lean-mass').innerText = "-- kg";
+                document.getElementById('profile-weight-display').innerText = "-- kg";
+                document.getElementById('profile-lean-display').innerText = "-- kg";
+                document.getElementById('profile-target-display').innerText = `${state.targetWeight} kg / ${state.targetBodyFat}% MG`;
                 document.getElementById('label-goal-weight').innerText = "-- / -- kg";
                 document.getElementById('label-goal-bf').innerText = "-- / -- %";
                 document.getElementById('fill-goal-weight').style.width = "0%";
@@ -1669,7 +1842,7 @@
 
             document.getElementById(`tab-${tabId}`).classList.add('active');
             
-            const btnMap = { status: 0, quest: 1, workout: 2, weighin: 3 };
+            const btnMap = { profile: 0, status: 1, quest: 2, workout: 3, weighin: 4 };
             document.querySelectorAll('.nav-btn')[btnMap[tabId]].classList.add('active');
         }
 
