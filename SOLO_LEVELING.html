@@ -472,14 +472,14 @@
             filter: drop-shadow(0 0 6px #0095ff) drop-shadow(0 0 12px #00f0ff);
         }
 
-        .muscle-checklist {
+        .muscle-checklist, .days-checklist {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 6px;
             margin-bottom: 10px;
         }
 
-        .muscle-check-item {
+        .muscle-check-item, .day-check-item {
             display: flex;
             align-items: center;
             gap: 6px;
@@ -786,7 +786,7 @@
                         <div class="goal-item" id="workout-goal-container">
                             <div class="goal-name">
                                 <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
-                                <span>Séance de musculation</span>
+                                <span id="workout-goal-label">Séance : Repos</span>
                             </div>
                             <div class="goal-progress" id="workout-status">À effectuer</div>
                             <div style="align-self: flex-end;">
@@ -809,7 +809,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET SÉANCE RESTRUCTURÉ -->
+            <!-- ONGLET SÉANCE -->
             <div id="tab-workout" class="tab-content">
                 <div class="section-header">
                     <span>Gestion des Séances & Schéma Musculaire</span>
@@ -824,8 +824,20 @@
                             <form onsubmit="createCustomRoutine(event)">
                                 <div class="form-group">
                                     <label>Nom de la Séance</label>
-                                    <input type="text" id="routine-name-input" class="form-control" placeholder="ex: Pecs / Triceps" required>
+                                    <input type="text" id="routine-name-input" class="form-control" placeholder="ex: Dos / Biceps" required>
                                 </div>
+                                
+                                <label style="font-family:'Orbitron'; font-size:0.75rem; color: var(--gold); display:block; margin-bottom:6px;">Jours de la Quête Quotidienne :</label>
+                                <div class="days-checklist">
+                                    <label class="day-check-item"><input type="checkbox" value="1" class="chk-d"> Lundi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="2" class="chk-d"> Mardi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="3" class="chk-d"> Mercredi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="4" class="chk-d"> Jeudi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="5" class="chk-d"> Vendredi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="6" class="chk-d"> Samedi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="0" class="chk-d"> Dimanche</label>
+                                </div>
+
                                 <label style="font-family:'Orbitron'; font-size:0.75rem; color: var(--neon-cyan); display:block; margin-bottom:6px;">Muscles Ciblés :</label>
                                 <div class="muscle-checklist">
                                     <label class="muscle-check-item"><input type="checkbox" value="pecs" class="chk-m"> Pectoraux</label>
@@ -850,7 +862,7 @@
                     <!-- SCHEMA CORPOREL AUTOMATIQUE -->
                     <div>
                         <p style="font-size: 0.8rem; color: #72a8c8; margin-bottom: 10px; text-align: center;">
-                            * Les muscles ciblés s'éclairent automatiquement lors de la validation d'une séance et se réinitialisent chaque dimanche.
+                            * Les muscles de la séance validée dans vos quêtes s'éclairent automatiquement et se réinitialisent le dimanche.
                         </p>
                         <div class="hevy-anatomy-container">
                             <div style="text-align: center;">
@@ -1026,9 +1038,9 @@
             stats: { strength: 0, endurance: 0, muscleMass: 0, willpower: 0 },
             musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false },
             routines: [
-                { id: 1, name: "Pecs / Triceps / Épaules", muscles: ["pecs", "triceps", "shoulders"] },
-                { id: 2, name: "Dos / Biceps", muscles: ["back", "biceps"] },
-                { id: 3, name: "Jambes / Abdominaux", muscles: ["legs", "abs"] }
+                { id: 1, name: "Pecs / Triceps / Épaules", days: [1, 4], muscles: ["pecs", "triceps", "shoulders"] },
+                { id: 2, name: "Dos / Biceps", days: [2, 5], muscles: ["back", "biceps"] },
+                { id: 3, name: "Jambes / Abdominaux", days: [3], muscles: ["legs", "abs"] }
             ]
         };
 
@@ -1064,9 +1076,9 @@
                 stats: { strength: 0, endurance: 0, muscleMass: 0, willpower: 0 },
                 musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false },
                 routines: [
-                    { id: 1, name: "Pecs / Triceps / Épaules", muscles: ["pecs", "triceps", "shoulders"] },
-                    { id: 2, name: "Dos / Biceps", muscles: ["back", "biceps"] },
-                    { id: 3, name: "Jambes / Abdominaux", muscles: ["legs", "abs"] }
+                    { id: 1, name: "Pecs / Triceps / Épaules", days: [1, 4], muscles: ["pecs", "triceps", "shoulders"] },
+                    { id: 2, name: "Dos / Biceps", days: [2, 5], muscles: ["back", "biceps"] },
+                    { id: 3, name: "Jambes / Abdominaux", days: [3], muscles: ["legs", "abs"] }
                 ]
             };
             updateUI();
@@ -1182,6 +1194,7 @@
                 logMessage("Nouveau profil initialisé dans le cloud.");
             }
             checkWeeklyReset();
+            initDailyConfig();
             updateUI();
         }
 
@@ -1211,9 +1224,25 @@
             } catch(e) {}
         }
 
+        function getTodayRoutine() {
+            const today = new Date().getDay();
+            if (!state.routines) return null;
+            return state.routines.find(r => r.days && r.days.includes(today)) || null;
+        }
+
         function initDailyConfig() {
             const today = new Date().getDay();
             document.getElementById('today-name').innerText = dayNames[today];
+
+            const todayRoutine = getTodayRoutine();
+            const workoutLabel = document.getElementById('workout-goal-label');
+
+            if (todayRoutine) {
+                workoutLabel.innerText = `Séance : ${todayRoutine.name}`;
+            } else {
+                workoutLabel.innerText = "Séance : Repos / Libre";
+            }
+
             updateWeighWarning();
         }
 
@@ -1262,7 +1291,6 @@
             document.getElementById('workout-status').style.color = state.workoutDone ? "var(--success-green)" : "var(--neon-cyan)";
             document.getElementById('chk-workout').checked = state.workoutDone;
 
-            // Déblocage exact du bouton de réclamation des récompenses de quête
             const isReady = state.creatineDone && state.gripDone && state.steps >= 10000 && state.workoutDone && !state.questClaimed;
             document.getElementById('btn-claim-quest').disabled = !isReady;
             if (state.questClaimed) {
@@ -1306,12 +1334,14 @@
             updateAnatomyDiagram();
         }
 
-        // CREER UNE SEANCE CUSTOM
         function createCustomRoutine(e) {
             e.preventDefault();
             const name = document.getElementById('routine-name-input').value.trim();
-            const checkboxes = document.querySelectorAll('.chk-m:checked');
-            const selectedMuscles = Array.from(checkboxes).map(cb => cb.value);
+            const dayCheckboxes = document.querySelectorAll('.chk-d:checked');
+            const muscleCheckboxes = document.querySelectorAll('.chk-m:checked');
+
+            const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
+            const selectedMuscles = Array.from(muscleCheckboxes).map(cb => cb.value);
 
             if (!name || selectedMuscles.length === 0) {
                 alert("Veuillez entrer un nom et choisir au moins un muscle.");
@@ -1321,6 +1351,7 @@
             const newRoutine = {
                 id: Date.now(),
                 name: name,
+                days: selectedDays,
                 muscles: selectedMuscles
             };
 
@@ -1328,35 +1359,19 @@
             state.routines.push(newRoutine);
 
             document.getElementById('routine-name-input').value = '';
-            checkboxes.forEach(cb => cb.checked = false);
+            dayCheckboxes.forEach(cb => cb.checked = false);
+            muscleCheckboxes.forEach(cb => cb.checked = false);
 
-            logMessage(`Séance "${name}" créée.`);
+            logMessage(`Séance "${name}" enregistrée.`);
             saveUserData();
+            initDailyConfig();
             updateUI();
         }
 
         function deleteRoutine(id) {
             state.routines = state.routines.filter(r => r.id !== id);
             saveUserData();
-            updateUI();
-        }
-
-        function validateRoutine(routineId) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            playSound(600, 1000, 0.1);
-
-            const routine = state.routines.find(r => r.id === routineId);
-            if (!routine) return;
-
-            routine.muscles.forEach(m => {
-                state.musclesWorked[m] = true;
-            });
-
-            state.workoutDone = true;
-            state.stats.strength += 1;
-
-            logMessage(`Séance "${routine.name}" effectuée ! Muscles illuminés et +1 Force.`);
-            saveUserData();
+            initDailyConfig();
             updateUI();
         }
 
@@ -1367,20 +1382,28 @@
                 return;
             }
 
-            list.innerHTML = state.routines.map(r => `
-                <div class="routine-card">
-                    <div>
-                        <strong style="color: #fff; font-family:'Orbitron'; font-size: 0.85rem;">${r.name}</strong>
-                        <div style="font-size: 0.75rem; color: var(--neon-cyan); margin-top:2px;">
-                            ${r.muscles.join(', ')}
+            list.innerHTML = state.routines.map(r => {
+                const dayText = (r.days && r.days.length > 0) 
+                    ? r.days.map(d => dayNames[d]).join(', ') 
+                    : "Aucun jour attribué";
+
+                return `
+                    <div class="routine-card">
+                        <div>
+                            <strong style="color: #fff; font-family:'Orbitron'; font-size: 0.85rem;">${r.name}</strong>
+                            <div style="font-size: 0.75rem; color: var(--gold); margin-top:2px;">
+                                <i class="fa-solid fa-calendar-days"></i> ${dayText}
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--neon-cyan); margin-top:2px;">
+                                ${r.muscles.join(', ')}
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn-quest-action" style="border-color: var(--danger-red); color:#ff99b3;" onclick="deleteRoutine(${r.id})"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn-quest-action" onclick="validateRoutine(${r.id})">Valider</button>
-                        <button class="btn-quest-action" style="border-color: var(--danger-red); color:#ff99b3;" onclick="deleteRoutine(${r.id})"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function updateAnatomyDiagram() {
@@ -1428,9 +1451,20 @@
             const wasDone = state.workoutDone;
             state.workoutDone = document.getElementById('chk-workout').checked;
 
+            const todayRoutine = getTodayRoutine();
+
             if (!wasDone && state.workoutDone) {
                 state.stats.strength += 1;
-                logMessage("Séance validée ! +1 Point de Force.");
+                
+                // Allumer les muscles ciblés par la séance du jour s'il y en a une
+                if (todayRoutine && todayRoutine.muscles) {
+                    todayRoutine.muscles.forEach(m => {
+                        state.musclesWorked[m] = true;
+                    });
+                    logMessage(`Séance "${todayRoutine.name}" validée ! Muscles illuminés sur le schéma corporel.`);
+                } else {
+                    logMessage("Séance du jour validée ! +1 Point de Force.");
+                }
             } else if (wasDone && !state.workoutDone) {
                 state.stats.strength = Math.max(0, state.stats.strength - 1);
             }
