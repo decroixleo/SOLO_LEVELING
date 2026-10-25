@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SoloFlexing</title>
+    <title>Interface Système - Solo Leveling Musculation</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -357,11 +357,843 @@
         }
 
         .goal-name { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .goal-progress { font-family: 'Orbitron', sans-serif; font-size: 1remLe problème vient de la manière dont la requête de recherche est rédigée dans le code JavaScript : elle utilise la fonction de recherche exacte `.eq('username', friendUsername)` qui **est sensible à la casse** (majuscules/minuscules) et qui échoue si les profils n'ont pas encore leur pseudo enregistré dans la colonne dédiée.
+        .goal-progress { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--neon-cyan); }
 
-Voici le code mis à jour. Il utilise `.ilike()` pour ignorer la casse des majuscules/minuscules lors de la recherche d'amis.
+        .btn-quest-action {
+            background: rgba(0, 210, 255, 0.2);
+            border: 1px solid var(--neon-cyan);
+            color: #fff;
+            padding: 6px 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-Remplace tout le contenu de ton fichier `index.html` par cette version :
+        .btn-quest-action:hover {
+            background: var(--neon-cyan);
+            color: #000;
+        }
+
+        .custom-checkbox {
+            width: 24px; height: 24px;
+            accent-color: var(--neon-blue);
+            cursor: pointer;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; text-align: left; }
+        .form-group label { font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: var(--neon-cyan); }
+        .form-control {
+            background: rgba(0, 25, 50, 0.7);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            color: #fff;
+            padding: 8px 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            width: 100%;
+        }
+        .form-control:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px var(--accent-glow); }
+
+        .warning-banner {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(255, 51, 102, 0.15);
+            border: 1px solid var(--danger-red);
+            padding: 10px 15px;
+            color: #ff99b3;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        @media (min-width: 576px) {
+            .warning-banner {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+            }
+        }
+
+        .warning-banner.alert {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .hevy-anatomy-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            background: #000000;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px 5px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 210, 255, 0.15);
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .hevy-body-svg {
+            width: 140px;
+            height: 310px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 576px) {
+            .hevy-body-svg {
+                width: 165px;
+                height: 360px;
+            }
+        }
+
+        .m-head, .m-base {
+            fill: var(--muscle-body-bg);
+            stroke: #2d3748;
+            stroke-width: 0.5;
+        }
+
+        .m-group {
+            fill: var(--muscle-base);
+            stroke: #1a202c;
+            stroke-width: 0.6;
+            transition: all 0.35s ease;
+            pointer-events: none;
+        }
+
+        .m-group.active {
+            fill: #0088ff !important;
+            stroke: #00f0ff !important;
+            stroke-width: 1;
+            filter: drop-shadow(0 0 6px #0095ff) drop-shadow(0 0 12px #00f0ff);
+        }
+
+        .muscle-checklist, .days-checklist {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .muscle-check-item, .day-check-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: #a0c0d0;
+            background: rgba(0, 20, 40, 0.5);
+            padding: 4px 8px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+        }
+
+        .routine-card, .friend-card {
+            background: rgba(0, 30, 60, 0.5);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .friend-card {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .friend-card:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 50, 100, 0.6);
+        }
+
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .avatar-frame {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue);
+            object-fit: cover;
+            background: rgba(0, 30, 60, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.8rem;
+            color: var(--neon-cyan);
+            overflow: hidden;
+        }
+
+        .avatar-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        footer {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        @media (min-width: 768px) {
+            footer {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+                clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            }
+        }
+
+        .system-log { color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: 0.8rem; }
+
+        .btn-action {
+            background: linear-gradient(180deg, rgba(0,210,255,0.3) 0%, rgba(0,120,215,0.5) 100%);
+            border: 1px solid var(--neon-blue);
+            color: #fff;
+            padding: 10px 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-action-signup {
+            background: linear-gradient(180deg, rgba(255,215,0,0.3) 0%, rgba(180,130,0,0.5) 100%);
+            border: 1px solid var(--gold);
+            color: #fff;
+            padding: 10px 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .btn-action {
+                width: auto;
+                clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+            }
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background: var(--neon-blue);
+            color: var(--dark-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .btn-action:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: #666;
+        }
+
+        .modal-overlay, .level-up-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 11, 24, 0.92);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+
+        .modal-overlay.show, .level-up-overlay.show { 
+            display: flex !important; 
+        }
+
+        .modal-box, .level-up-box {
+            border: 2px solid var(--neon-blue);
+            background: rgba(4, 25, 50, 0.98);
+            padding: 25px;
+            box-shadow: 0 0 35px var(--neon-blue);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        @keyframes pulse { 0% { opacity: 0.7; } 100% { opacity: 1; text-shadow: 0 0 15px var(--neon-blue); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY DE CONNEXION -->
+    <div class="auth-overlay" id="auth-screen" style="display: flex;">
+        <div class="auth-box">
+            <div class="auth-title"><i class="fa-solid fa-shield-halved"></i> IDENTIFICATION DU JOUEUR</div>
+            
+            <div id="auth-error" style="color: var(--danger-red); font-size: 0.85rem; margin-bottom: 12px; display: none; background: rgba(255,0,0,0.15); padding: 10px; border: 1px solid var(--danger-red); text-align: left; word-break: break-word;"></div>
+
+            <div class="auth-section-title"><i class="fa-solid fa-right-to-bracket"></i> DÉJÀ UN COMPTE ?</div>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>EMAIL</label>
+                    <input type="email" class="form-control" id="login-email" required placeholder="joueur@domaine.com">
+                </div>
+                <div class="form-group">
+                    <label>MOT DE PASSE</label>
+                    <input type="password" class="form-control" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-action" id="login-btn" style="width: 100%; margin-top: 5px;">SE CONNECTER</button>
+            </form>
+
+            <div style="margin: 20px 0; border-top: 1px dashed rgba(0,210,255,0.3);"></div>
+
+            <div class="auth-section-title" style="color: var(--neon-cyan);"><i class="fa-solid fa-user-plus"></i> NOUVEAU JOUEUR ?</div>
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>EMAIL</label>
+                    <input type="email" class="form-control" id="signup-email" required placeholder="joueur@domaine.com">
+                </div>
+                <div class="form-group">
+                    <label>MOT DE PASSE (6+ car.)</label>
+                    <input type="password" class="form-control" id="signup-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-action-signup" id="signup-btn" style="width: 100%; margin-top: 5px;">CRÉER MON COMPTE</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="system-glow"></div>
+
+    <div class="system-container">
+        <header>
+            <div class="title-group">
+                <i class="fa-solid fa-bolt system-icon"></i>
+                <h1>Système // Programme Entraînement</h1>
+            </div>
+            <nav>
+                <button class="nav-btn" onclick="switchTab('profile')">
+                    <i class="fa-solid fa-user-gear"></i> Profil
+                </button>
+                <button class="nav-btn" onclick="switchTab('friends')">
+                    <i class="fa-solid fa-users"></i> Amis
+                </button>
+                <button class="nav-btn active" onclick="switchTab('status')">
+                    <i class="fa-solid fa-user"></i> Statut
+                </button>
+                <button class="nav-btn" onclick="switchTab('quest')">
+                    <i class="fa-solid fa-scroll"></i> Quête
+                </button>
+                <button class="nav-btn" onclick="switchTab('workout')">
+                    <i class="fa-solid fa-dumbbell"></i> Séance
+                </button>
+                <button class="nav-btn" onclick="switchTab('weighin')">
+                    <i class="fa-solid fa-weight-scale"></i> Pesée
+                </button>
+            </nav>
+            <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+        </header>
+
+        <main class="system-frame">
+
+            <!-- ONGLET PROFIL -->
+            <div id="tab-profile" class="tab-content">
+                <div class="section-header">
+                    <span>Profil Joueur & Récapitulatif Général</span>
+                    <i class="fa-solid fa-id-card"></i>
+                </div>
+
+                <div class="grid-2col">
+                    <div>
+                        <div class="avatar-container">
+                            <div class="avatar-frame" id="avatar-display">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <label class="btn-quest-action" style="cursor: pointer;">
+                                <i class="fa-solid fa-camera"></i> Modifier la photo
+                                <input type="file" id="input-avatar" accept="image/*" style="display: none;" onchange="uploadAvatar(event)">
+                            </label>
+                        </div>
+
+                        <form onsubmit="saveProfileInfo(event)" style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
+                            <div class="form-group">
+                                <label>Pseudo Unique du Joueur</label>
+                                <input type="text" class="form-control" id="profile-username-input" placeholder="ex: Sung_Jin_Woo" required>
+                            </div>
+                            <button type="submit" class="btn-quest-action" style="width: 100%;">Enregistrer le Pseudo</button>
+                        </form>
+
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
+                            <div class="info-row">
+                                <span class="label">Pseudo :</span>
+                                <span class="val" id="profile-username-display" style="color: var(--neon-blue);">Joueur Inconnu</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Niveau :</span>
+                                <span class="val" id="profile-level-display">1</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Rang Officiel :</span>
+                                <span class="val" id="profile-rank-display" style="color: var(--gold);">Rang Civile</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="section-header" style="font-size: 0.9rem;">
+                            <span>Vue d'ensemble du Chasseur</span>
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
+                            <h4 style="font-family: 'Orbitron'; font-size: 0.85rem; color: var(--gold); margin-bottom: 8px;">Programme Hebdomadaire :</h4>
+                            <div id="profile-routines-summary"></div>
+                        </div>
+
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
+                            <h4 style="font-family: 'Orbitron'; font-size: 0.85rem; color: var(--neon-cyan); margin-bottom: 8px;">Physique & Poids :</h4>
+                            <div class="info-row">
+                                <span class="label">Dernier Poids :</span>
+                                <span class="val" id="profile-weight-display">-- kg</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Masse Maigre :</span>
+                                <span class="val" id="profile-lean-display">-- kg</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Objectif Cible :</span>
+                                <span class="val" id="profile-target-display">-- kg / --% MG</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET AMIS -->
+            <div id="tab-friends" class="tab-content">
+                <div class="section-header">
+                    <span>Réseau de Chasseurs & Liste d'Amis</span>
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <div class="grid-2col">
+                    <div>
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: var(--gold); margin-bottom: 10px;">Ajouter un Ami</h3>
+                            <form onsubmit="addFriendByUsername(event)">
+                                <div class="form-group">
+                                    <label>Pseudo de l'Ami</label>
+                                    <input type="text" id="friend-username-input" class="form-control" placeholder="ex: CodeSmock ou GuyomS" required>
+                                </div>
+                                <button type="submit" class="btn-quest-action" style="width: 100%;">+ Envoyer / Ajouter</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: #fff; margin-bottom: 10px;">Mes Amis</h3>
+                            <div id="friends-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET STATUT -->
+            <div id="tab-status" class="tab-content active">
+                <div class="grid-2col">
+                    <div>
+                        <div class="section-header">
+                            <span>Informations du Joueur</span>
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Niveau :</span>
+                            <span class="val" id="player-level" style="font-size: 1.5rem; color: var(--neon-blue);">1</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Rang Officiel :</span>
+                            <span class="val" id="player-rank" style="color: var(--gold); font-size: 1.1rem;">Rang Civile</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Dernier Poids :</span>
+                            <span class="val" id="display-last-weight">-- kg</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Masse Maigre :</span>
+                            <span class="val" id="display-lean-mass">-- kg</span>
+                        </div>
+
+                        <div class="bar-container">
+                            <div class="bar-info">
+                                <span style="color: var(--neon-cyan);">Progression EXP</span>
+                                <span id="exp-text">0 / 100 EXP</span>
+                            </div>
+                            <div class="bar-outer">
+                                <div class="bar-inner" id="exp-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="section-header">
+                            <span>Attributs Physiques Réels</span>
+                            <i class="fa-solid fa-dumbbell"></i>
+                        </div>
+                        <p style="font-size: 0.8rem; color: #72a8c8; margin-bottom: 10px;">
+                            * Les statistiques évoluent selon vos séances, pas, pesées et quêtes.
+                        </p>
+                        <div class="info-row">
+                            <span class="label"><i class="fa-solid fa-dumbbell"></i> Force (Séances)</span>
+                            <span class="val" id="stat-str">0</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label"><i class="fa-solid fa-heart-pulse"></i> Endurance (10k Pas)</span>
+                            <span class="val" id="stat-end">0</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label"><i class="fa-solid fa-child"></i> Masse Musculaire</span>
+                            <span class="val" id="stat-mass">0</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label"><i class="fa-solid fa-fire"></i> Volonté (Quêtes)</span>
+                            <span class="val" id="stat-will">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET QUÊTE -->
+            <div id="tab-quest" class="tab-content">
+                <div class="quest-box">
+                    <div style="text-align: center; border-bottom: 2px double var(--neon-cyan); padding-bottom: 10px; margin-bottom: 15px;">
+                        <div style="font-family: 'Orbitron'; color: var(--neon-blue); font-size: 1.2rem; letter-spacing: 1px;">
+                            <i class="fa-solid fa-exclamation-triangle"></i> QUÊTE QUOTIDIENNE
+                        </div>
+                        <div style="font-size: 0.85rem; color: #a0c0d0; margin-top: 4px;">
+                            Aujourd'hui : <strong id="today-name" style="color: var(--gold);">Lundi</strong>
+                        </div>
+                    </div>
+
+                    <div class="quest-goals">
+                        <div class="goal-item">
+                            <div class="goal-name">
+                                <i class="fa-solid fa-prescription-bottle-medical" style="color: var(--neon-blue);"></i>
+                                Créatine (6g)
+                            </div>
+                            <div class="goal-progress" id="creatine-status">Non pris</div>
+                            <div style="align-self: flex-end;">
+                                <input type="checkbox" class="custom-checkbox" id="chk-creatine" onchange="toggleCreatine()">
+                            </div>
+                        </div>
+
+                        <div class="goal-item">
+                            <div class="goal-name">
+                                <i class="fa-solid fa-shoe-prints" style="color: var(--success-green);"></i>
+                                Marche (10 000 pas)
+                            </div>
+                            <div class="goal-progress" id="steps-count">0 / 10k</div>
+                            <div style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
+                                <div style="display: flex; gap: 4px; justify-content: flex-end;">
+                                    <button class="btn-quest-action" onclick="addSteps(-5000)">-5k</button>
+                                    <button class="btn-quest-action" onclick="addSteps(-1000)">-1k</button>
+                                    <button class="btn-quest-action" onclick="addSteps(1000)">+1k</button>
+                                    <button class="btn-quest-action" onclick="addSteps(5000)">+5k</button>
+                                </div>
+                                <div style="display: flex; gap: 5px; align-items: center; justify-content: flex-end;">
+                                    <input type="number" id="input-custom-steps" placeholder="ex: 8500" style="width: 90px; padding: 4px; background: rgba(0,20,40,0.8); border: 1px solid var(--neon-cyan); color: #fff; font-family: 'Orbitron'; font-size: 0.75rem;">
+                                    <button class="btn-quest-action" onclick="setCustomSteps()">OK</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="goal-item">
+                            <div class="goal-name">
+                                <i class="fa-solid fa-hand-fist" style="color: #a855f7;"></i>
+                                Presse-poignée (3x30 rep / main)
+                            </div>
+                            <div class="goal-progress" id="grip-status">Non fait</div>
+                            <div style="align-self: flex-end;">
+                                <input type="checkbox" class="custom-checkbox" id="chk-grip" onchange="toggleGrip()">
+                            </div>
+                        </div>
+
+                        <div class="goal-item" id="workout-goal-container">
+                            <div class="goal-name">
+                                <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
+                                <span id="workout-goal-label">Séance du jour</span>
+                            </div>
+                            <div class="goal-progress" id="workout-status">À effectuer</div>
+                            <div style="align-self: flex-end;">
+                                <input type="checkbox" class="custom-checkbox" id="chk-workout" onchange="toggleWorkout()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid rgba(0, 210, 255, 0.3); padding-top: 12px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                        <div style="text-align: center;">
+                            <span style="color: #a0c0d0; font-size: 0.85rem;">Récompenses de Quête :</span>
+                            <div style="color: var(--gold); font-family: 'Orbitron'; font-size: 1rem; margin-top: 2px;">
+                                +150 EXP • +1 Volonté
+                            </div>
+                        </div>
+                        <button class="btn-action" id="btn-claim-quest" disabled onclick="claimDailyQuest()">
+                            Réclamer les Récompenses
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET SÉANCE -->
+            <div id="tab-workout" class="tab-content">
+                <div class="section-header">
+                    <span>Gestion des Séances & Schéma Musculaire</span>
+                    <i class="fa-solid fa-dumbbell"></i>
+                </div>
+
+                <div class="grid-2col">
+                    <div>
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: var(--gold); margin-bottom: 10px;" id="routine-form-title">Créer une Nouvelle Séance</h3>
+                            <form onsubmit="saveCustomRoutine(event)">
+                                <input type="hidden" id="editing-routine-id" value="">
+                                <div class="form-group">
+                                    <label>Nom de la Séance</label>
+                                    <input type="text" id="routine-name-input" class="form-control" placeholder="ex: Dos / Biceps" required>
+                                </div>
+                                
+                                <label style="font-family:'Orbitron'; font-size:0.75rem; color: var(--gold); display:block; margin-bottom:6px;">Jours d'Apparition :</label>
+                                <div class="days-checklist">
+                                    <label class="day-check-item"><input type="checkbox" value="1" class="chk-d"> Lundi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="2" class="chk-d"> Mardi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="3" class="chk-d"> Mercredi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="4" class="chk-d"> Jeudi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="5" class="chk-d"> Vendredi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="6" class="chk-d"> Samedi</label>
+                                    <label class="day-check-item"><input type="checkbox" value="0" class="chk-d"> Dimanche</label>
+                                </div>
+
+                                <label style="font-family:'Orbitron'; font-size:0.75rem; color: var(--neon-cyan); display:block; margin-bottom:6px;">Muscles Ciblés :</label>
+                                <div class="muscle-checklist">
+                                    <label class="muscle-check-item"><input type="checkbox" value="pecs" class="chk-m"> Pectoraux</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="back" class="chk-m"> Dos</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="shoulders" class="chk-m"> Épaules</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="biceps" class="chk-m"> Biceps</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="triceps" class="chk-m"> Triceps</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="abs" class="chk-m"> Abdominaux</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="legs" class="chk-m"> Jambes</label>
+                                </div>
+                                <div style="display:flex; gap:6px;">
+                                    <button type="submit" class="btn-quest-action" style="flex:1; margin-top:8px;" id="btn-save-routine">+ Enregistrer la Séance</button>
+                                    <button type="button" class="btn-quest-action" style="margin-top:8px; border-color:var(--danger-red); color:#ff99b3; display:none;" id="btn-cancel-edit" onclick="cancelEditRoutine()">Annuler</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: #fff; margin-bottom: 8px;">Mes Séances</h3>
+                            <div id="routines-list"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p style="font-size: 0.8rem; color: #72a8c8; margin-bottom: 10px; text-align: center;">
+                            * Les muscles de la séance validée dans vos quêtes s'éclairent automatiquement et se réinitialisent le dimanche à 23h59.
+                        </p>
+                        <div class="hevy-anatomy-container">
+                            <div style="text-align: center;">
+                                <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">FACE</div>
+                                <svg class="hevy-body-svg" viewBox="0 0 100 220">
+                                    <circle class="m-head" cx="50" cy="18" r="9"/>
+                                    <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
+                                    <path id="svg-pecs-l" class="m-group" d="M36 43 C42 43 49 45 49 57 C41 58 35 55 33 50 C33 46 34 43 36 43 Z"/>
+                                    <path id="svg-pecs-r" class="m-group" d="M64 43 C58 43 51 45 51 57 C59 58 65 55 67 50 C67 46 66 43 64 43 Z"/>
+                                    <path id="svg-shoulders-fl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
+                                    <path id="svg-shoulders-fr" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
+                                    <path id="svg-biceps-l" class="m-group" d="M26 60 C23 66 22 74 22 81 C25 82 28 80 29 74 C30 68 29 61 28 60 Z"/>
+                                    <path id="svg-biceps-r" class="m-group" d="M74 60 C77 66 78 74 78 81 C75 82 72 80 71 74 C70 68 71 61 72 60 Z"/>
+                                    <path id="svg-forearms-fl" class="m-group" d="M22 84 C20 90 19 98 21 106 C24 106 26 102 27 96 C28 90 27 85 25 84 Z"/>
+                                    <path id="svg-forearms-fr" class="m-group" d="M78 84 C80 90 81 98 79 106 C76 106 74 102 73 96 C72 90 73 85 75 84 Z"/>
+                                    <path id="svg-abs" class="m-group" d="M41 60 L49 60 L49 69 L41 69 Z M51 60 L59 60 L59 69 L51 69 Z M41 71 L49 71 L49 80 L41 80 Z M51 71 L59 71 L59 80 L51 80 Z M42 82 L49 82 L49 92 L43 92 Z M51 82 L58 82 L57 92 L51 92 Z M34 60 C38 68 38 80 39 90 L32 78 Z M66 60 C62 68 62 80 61 90 L68 78 Z"/>
+                                    <path id="svg-legs-fl" class="m-group" d="M34 118 C35 135 34 156 34 166 C39 167 45 166 46 153 C47 140 47 126 46 118 Z"/>
+                                    <path id="svg-legs-fr" class="m-group" d="M66 118 C65 135 66 156 66 166 C61 167 55 166 54 153 C53 140 53 126 54 118 Z"/>
+                                    <path id="svg-calves-fl" class="m-group" d="M35 170 C33 180 34 196 36 204 C39 204 41 198 42 188 C43 178 41 171 39 170 Z"/>
+                                    <path id="svg-calves-fr" class="m-group" d="M65 170 C67 180 66 196 64 204 C61 204 59 198 58 188 C57 178 59 171 61 170 Z"/>
+                                </svg>
+                            </div>
+
+                            <div style="text-align: center;">
+                                <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">DOS</div>
+                                <svg class="hevy-body-svg" viewBox="0 0 100 220">
+                                    <circle class="m-head" cx="50" cy="18" r="9"/>
+                                    <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
+                                    <path id="svg-back" class="m-group" d="M41 36 L50 44 L59 36 L66 52 L60 82 L50 92 L40 82 L34 52 Z"/>
+                                    <path id="svg-shoulders-bl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
+                                    <path id="svg-shoulders-br" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
+                                    <path id="svg-triceps-l" class="m-group" d="M25 52 C27 58 28 66 28 72 C25 73 22 71 21 65 C21 58 23 53 25 52 Z"/>
+                                    <path id="svg-triceps-r" class="m-group" d="M75 52 C73 58 72 66 72 72 C75 73 78 71 79 65 C79 58 77 53 75 52 Z"/>
+                                    <path id="svg-forearms-bl" class="m-group" d="M21 76 C20 84 19 95 21 105 C24 105 26 100 27 92 C28 84 26 78 24 76 Z"/>
+                                    <path id="svg-forearms-br" class="m-group" d="M79 76 C80 84 81 95 79 105 C76 105 74 100 73 92 C72 84 74 78 76 76 Z"/>
+                                    <path id="svg-legs-bl" class="m-group" d="M36 95 C42 95 48 97 48 111 C48 134 46 157 44 167 C39 167 35 151 35 124 C35 107 35 97 36 95 Z"/>
+                                    <path id="svg-legs-br" class="m-group" d="M64 95 C58 95 52 97 52 111 C52 134 54 157 56 167 C61 167 65 151 65 124 C65 107 65 97 64 95 Z"/>
+                                    <path id="svg-calves-bl" class="m-group" d="M35 170 C32 178 33 194 36 204 C39 204 42 198 43 187 C44 177 41 171 39 170 Z"/>
+                                    <path id="svg-calves-br" class="m-group" d="M65 170 C68 178 67 194 64 204 C61 204 58 198 57 187 C56 177 59 171 61 170 Z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET PESÉE -->
+            <div id="tab-weighin" class="tab-content">
+                <div class="section-header">
+                    <span>Composition Corporelle & Objectifs (+500 EXP)</span>
+                    <i class="fa-solid fa-bullseye"></i>
+                </div>
+
+                <div class="warning-banner" id="weigh-warning-banner">
+                    <span><i class="fa-solid fa-bell"></i> Status Pesée :</span>
+                    <strong id="weigh-warning-text">Rappel : Pesée dans 3 jours</strong>
+                </div>
+
+                <div class="grid-2col">
+                    <div>
+                        <div class="section-header" style="font-size: 0.9rem;">Enregistrer une Pesée</div>
+                        <form onsubmit="recordWeight(event)">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="form-group">
+                                    <label>Poids (kg)</label>
+                                    <input type="number" step="0.1" class="form-control" id="input-weight" placeholder="ex: 75.5" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Masse Grasse (%)</label>
+                                    <input type="number" step="0.1" class="form-control" id="input-bodyfat" placeholder="ex: 15.0" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-action" style="margin-bottom: 15px;">
+                                Valider la Pesée (+50 EXP)
+                            </button>
+                        </form>
+
+                        <div class="section-header" style="font-size: 0.9rem; margin-top: 10px;">Définir mes Objectifs Visés</div>
+                        <form onsubmit="setGoals(event)">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="form-group">
+                                    <label>Poids Cible (kg)</label>
+                                    <input type="number" step="0.1" class="form-control" id="target-weight-input" placeholder="ex: 80.0">
+                                </div>
+                                <div class="form-group">
+                                    <label>% MG Cible (%)</label>
+                                    <input type="number" step="0.1" class="form-control" id="target-bf-input" placeholder="ex: 12.0">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-quest-action" style="width: 100%;">Mettre à Jour les Objectifs</button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <div class="section-header" style="font-size: 0.9rem;">Progression vers les Objectifs</div>
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 15px;">
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family:'Orbitron';">
+                                    <span>Progression Poids</span>
+                                    <span id="label-goal-weight">-- / -- kg</span>
+                                </div>
+                                <div class="bar-outer" style="height: 12px; margin-top: 4px;">
+                                    <div class="bar-inner" id="fill-goal-weight" style="width: 0%; background: linear-gradient(90deg, #10b981, #00f0ff);"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family:'Orbitron';">
+                                    <span>Progression % MG</span>
+                                    <span id="label-goal-bf">-- / -- %</span>
+                                </div>
+                                <div class="bar-outer" style="height: 12px; margin-top: 4px;">
+                                    <div class="bar-inner" id="fill-goal-bf" style="width: 0%; background: linear-gradient(90deg, #a855f7, #ffd700);"></div>
+                                </div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--gold); margin-top: 10px; font-family: 'Orbitron'; text-align: center;">
+                                <i class="fa-solid fa-trophy"></i> Récompense : +500 EXP lors de l'accomplissement des 2 objectifs !
+                            </div>
+                        </div>
+
+                        <div class="section-header" style="font-size: 0.9rem;">Historique des Pesées</div>
+                        <div id="weight-history-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer>
+            <div class="system-log" id="system-log">
+                <span style="color: var(--gold); font-weight: bold;">[SYSTÈME]</span>
+                <span id="log-message">Système initialisé. Connexion requise.</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODALE FICHE AMI -->
+    <div class="modal-overlay" id="friend-profile-modal">
+        <div class="modal-box">
+            <div class="avatar-container">
+                <div class="avatar-frame" id="friend-modal-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
+            <h2 style="font-family: 'Orbitron'; color: var(--neon-blue); font-size: 1.3rem;" id="friend-modal-username">Joueur</h2>
+            <div style="font-family: 'Orbitron'; color: var(--gold); font-size: 0.9rem; margin-bottom: 12px;" id="friend-modal-rank">Rang E</div>
+            
+            <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 10px; margin-bottom: 15px; text-align: left;">
+                <div class="info-row"><span class="label">Niveau :</span><span class="val" id="friend-modal-level">1</span></div>
+                <div class="info-row"><span class="label">Force :</span><span class="val" id="friend-modal-str">0</span></div>
+                <div class="info-row"><span class="label">Endurance :</span><span class="val" id="friend-modal-end">0</span></div>
+                <div class="info-row"><span class="label">Masse Musculaire :</span><span class="val" id="friend-modal-mass">0</span></div>
+                <div class="info-row"><span class="label">Volonté :</span><span class="val" id="friend-modal-will">0</span></div>
+            </div>
+
+            <button class="btn-action" onclick="closeFriendModal()">FERMER</button>
+        </div>
+    </div>
+
+    <!-- LEVEL UP OVERLAY -->
+    <div class="level-up-overlay" id="level-up-modal">
+        <div class="level-up-box">
+            <h2 style="font-family: 'Orbitron'; font-size: 2rem; color: #fff; text-shadow: 0 0 20px var(--neon-blue); margin-bottom: 8px;">LEVEL UP !</h2>
+            <div style="font-size: 1.1rem; color: var(--neon-cyan); font-family: 'Orbitron'; margin-bottom: 6px;">
+                Niveau <span id="modal-level-val">2</span> Atteint
+            </div>
+            <div style="font-size: 1rem; color: var(--gold); font-family: 'Orbitron'; margin-bottom: 15px;" id="modal-rank-val">
+                Rang Civile
+            </div>
+            <p style="color: #c0e0f0; margin-bottom: 20px; font-size: 0.9rem;">Vos attributs physiques continuent d'évoluer !</p>
+            <button class="btn-action" onclick="closeLevelUpModal()">CONTINUER</button>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://kfvxenifwivauulzprbk.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmdnhlbmlmd2l2YXV1bHpwcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjL'erreur **`Cannot access 'supabase' before initialization`**[cite: 3] vient du fait que les variables `const supabase` et `const SUPABASE_URL` ont été déclarées tout en bas du script dans le bloc `<script>`, alors que les fonctions comme `handleLogin` ou `handleSignup` essayaient d'y accéder avant.
+
+En JavaScript, l'initialisation doit impérativement se faire **au tout début** du bloc `<script>`.
+
+Voici le code complet corrigé. Remplace l'intégralité du contenu de ton fichier `index.html` par celui-ci :
 
 ```html
 <!DOCTYPE html>
@@ -1554,6 +2386,7 @@ Remplace tout le contenu de ton fichier `index.html` par cette version :
     </div>
 
     <script>
+        // INITIALISATION DE SUPABASE AU DÉBUT DU SCRIPT
         const SUPABASE_URL = "[https://kfvxenifwivauulzprbk.supabase.co](https://kfvxenifwivauulzprbk.supabase.co)";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmdnhlbmlmd2l2YXV1bHpwcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5Mjc0NTUsImV4cCI6MjEwODUwMzQ1NX0.0D6D41QDKjnDaNHB_unD8QxJGKTebFsH3W-01nSKN3A";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1825,13 +2658,11 @@ Remplace tout le contenu de ton fichier `index.html` par cette version :
                 return;
             }
 
-            // 1. Recherche insensible à la casse dans la colonne "username"
             let { data } = await supabase
                 .from('profiles')
                 .select('username, state_data')
                 .ilike('username', friendUsername);
 
-            // 2. Recherche secours dans les données JSON si le pseudo n'était pas dans la colonne
             if (!data || data.length === 0) {
                 const { data: allProfiles } = await supabase.from('profiles').select('username, state_data');
                 if (allProfiles) {
