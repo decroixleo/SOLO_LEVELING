@@ -89,7 +89,7 @@
         .auth-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(1, 6, 14, 0.96);
+            background: rgba(1, 6, 14, 0.98);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -606,7 +606,8 @@
 </head>
 <body>
 
-    <div class="auth-overlay" id="auth-screen">
+    <!-- OVERLAY DE CONNEXION : VISIBLE PAR DÉFAUT -->
+    <div class="auth-overlay" id="auth-screen" style="display: flex;">
         <div class="auth-box">
             <div class="auth-title"><i class="fa-solid fa-shield-halved"></i> IDENTIFICATION DU JOUEUR</div>
             
@@ -997,7 +998,6 @@
     </div>
 
     <script>
-        // CONFIGURATION SUPABASE OFFICIELLE
         const SUPABASE_URL = "https://kfvxenifwivauulzprbk.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmdnhlbmlmd2l2YXV1bHpwcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5Mjc0NTUsImV4cCI6MjEwODUwMzQ1NX0.0D6D41QDKjnDaNHB_unD8QxJGKTebFsH3W-01nSKN3A";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1520,15 +1520,18 @@
             document.querySelectorAll('.nav-btn')[btnMap[tabId]].classList.add('active');
         }
 
+        // CHARGEMENT INITIAL : VÉRIFICATION DE LA SESSION SUPABASE
         window.onload = async () => {
             initDailyConfig();
             
             const { data } = await supabase.auth.getSession();
             if (data && data.session) {
+                // Session active trouvée : l'utilisateur reste connecté
                 currentUser = data.session.user;
                 document.getElementById('auth-screen').style.display = 'none';
                 await loadUserData();
             } else {
+                // Pas de session : obligation de se connecter
                 currentUser = null;
                 resetDefaultState();
                 document.getElementById('auth-screen').style.display = 'flex';
