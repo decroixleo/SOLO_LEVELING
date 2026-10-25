@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -53,7 +55,6 @@
             position: relative;
         }
 
-        /* Scanlines Overlay */
         body::before {
             content: "";
             position: fixed;
@@ -85,7 +86,61 @@
             z-index: 10;
         }
 
-        /* HEADER & RESPONSIVE NAV */
+        /* AUTH SCREEN */
+        .auth-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(1, 6, 14, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 500;
+            padding: 15px;
+        }
+
+        .auth-box {
+            background: var(--panel-bg);
+            border: 2px solid var(--neon-blue);
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 30px var(--accent-glow);
+            text-align: center;
+        }
+
+        .auth-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-shadow: var(--text-glow);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0,210,255,0.3);
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 8px;
+            background: none;
+            border: none;
+            color: #72a8c8;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .auth-tab-btn.active {
+            color: var(--neon-blue);
+            border-bottom: 2px solid var(--neon-blue);
+            font-weight: bold;
+        }
+
+        /* HEADER */
         header {
             display: flex;
             flex-direction: column;
@@ -186,6 +241,16 @@
             border-color: #fff;
             box-shadow: 0 0 12px var(--neon-blue);
             font-weight: 800;
+        }
+
+        .btn-logout {
+            background: rgba(255, 51, 102, 0.2);
+            border: 1px solid var(--danger-red);
+            color: #ff99b3;
+            padding: 8px 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
         }
 
         /* MAIN FRAME */
@@ -549,6 +614,31 @@
 </head>
 <body>
 
+    <!-- AUTHENTICATION OVERLAY -->
+    <div class="auth-overlay" id="auth-screen">
+        <div class="auth-box">
+            <div class="auth-title"><i class="fa-solid fa-shield-halved"></i> IDENTIFICATION DU JOUEUR</div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tab-btn-login" onclick="switchAuthTab('login')">CONNEXION</button>
+                <button class="auth-tab-btn" id="tab-btn-signup" onclick="switchAuthTab('signup')">INSCRIPTION</button>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label>EMAIL DU JOUEUR</label>
+                    <input type="email" class="form-control" id="auth-email" required placeholder="joueur@domaine.com">
+                </div>
+                <div class="form-group">
+                    <label>MOT DE PASSE</label>
+                    <input type="password" class="form-control" id="auth-password" required placeholder="••••••••">
+                </div>
+                <div id="auth-error" style="color: var(--danger-red); font-size: 0.8rem; margin-bottom: 10px; display: none;"></div>
+                <button type="submit" class="btn-action" id="auth-submit-btn" style="width: 100%; margin-top: 10px;">SE CONNECTER</button>
+            </form>
+        </div>
+    </div>
+
     <div class="system-glow"></div>
 
     <div class="system-container">
@@ -572,6 +662,7 @@
                     <i class="fa-solid fa-weight-scale"></i> Pesée
                 </button>
             </nav>
+            <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
         </header>
 
         <!-- MAIN FRAME -->
@@ -580,7 +671,6 @@
             <!-- TAB 1: STATUS -->
             <div id="tab-status" class="tab-content active">
                 <div class="grid-2col">
-                    <!-- Left: Profile -->
                     <div>
                         <div class="section-header">
                             <span>Informations du Joueur</span>
@@ -603,7 +693,6 @@
                             <span class="val" id="display-lean-mass">-- kg</span>
                         </div>
 
-                        <!-- EXP BAR -->
                         <div class="bar-container">
                             <div class="bar-info">
                                 <span style="color: var(--neon-cyan);">Progression EXP</span>
@@ -614,13 +703,11 @@
                             </div>
                         </div>
 
-                        <!-- TEST BUTTON -->
                         <button class="btn-action" style="margin-top: 15px;" onclick="addExp(50)">
                             +50 EXP (Test rapide)
                         </button>
                     </div>
 
-                    <!-- Right: Real-Data Stats starting at 0 -->
                     <div>
                         <div class="section-header">
                             <span>Attributs Physiques Réels</span>
@@ -662,7 +749,6 @@
                     </div>
 
                     <div class="quest-goals">
-                        <!-- Goal 1: Creatine -->
                         <div class="goal-item">
                             <div class="goal-name">
                                 <i class="fa-solid fa-prescription-bottle-medical" style="color: var(--neon-blue);"></i>
@@ -674,7 +760,6 @@
                             </div>
                         </div>
 
-                        <!-- Goal 2: Steps -->
                         <div class="goal-item">
                             <div class="goal-name">
                                 <i class="fa-solid fa-shoe-prints" style="color: var(--success-green);"></i>
@@ -695,7 +780,6 @@
                             </div>
                         </div>
 
-                        <!-- Goal 3: Grip Strength (Presse-poignée) -->
                         <div class="goal-item">
                             <div class="goal-name">
                                 <i class="fa-solid fa-hand-fist" style="color: #a855f7;"></i>
@@ -707,7 +791,6 @@
                             </div>
                         </div>
 
-                        <!-- Goal 4: Daily Workout Session -->
                         <div class="goal-item" id="workout-goal-container">
                             <div class="goal-name">
                                 <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
@@ -742,7 +825,6 @@
                 </div>
 
                 <div class="grid-2col">
-                    <!-- Left: Weekly Schedule & Manual Toggles -->
                     <div>
                         <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
                             <h3 style="font-family:'Orbitron'; font-size: 0.85rem; color: var(--gold); margin-bottom: 8px;">Planning Hebdomadaire</h3>
@@ -770,71 +852,42 @@
                         </div>
                     </div>
 
-                    <!-- Right: HEVY 3D VECTOR MUSCLE MAP -->
                     <div class="hevy-anatomy-container">
-                        <!-- FRONT VIEW -->
                         <div style="text-align: center;">
                             <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">FACE</div>
                             <svg class="hevy-body-svg" viewBox="0 0 100 220">
                                 <circle class="m-head" cx="50" cy="18" r="9"/>
                                 <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
-
-                                <!-- Pecs -->
                                 <path id="svg-pecs-l" class="m-group" d="M36 43 C42 43 49 45 49 57 C41 58 35 55 33 50 C33 46 34 43 36 43 Z"/>
                                 <path id="svg-pecs-r" class="m-group" d="M64 43 C58 43 51 45 51 57 C59 58 65 55 67 50 C67 46 66 43 64 43 Z"/>
-
-                                <!-- Shoulders Front -->
                                 <path id="svg-shoulders-fl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
                                 <path id="svg-shoulders-fr" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
-
-                                <!-- Biceps -->
                                 <path id="svg-biceps-l" class="m-group" d="M26 60 C23 66 22 74 22 81 C25 82 28 80 29 74 C30 68 29 61 28 60 Z"/>
                                 <path id="svg-biceps-r" class="m-group" d="M74 60 C77 66 78 74 78 81 C75 82 72 80 71 74 C70 68 71 61 72 60 Z"/>
-
-                                <!-- Forearms Front -->
                                 <path id="svg-forearms-fl" class="m-group" d="M22 84 C20 90 19 98 21 106 C24 106 26 102 27 96 C28 90 27 85 25 84 Z"/>
                                 <path id="svg-forearms-fr" class="m-group" d="M78 84 C80 90 81 98 79 106 C76 106 74 102 73 96 C72 90 73 85 75 84 Z"/>
-
-                                <!-- Abs / Core -->
                                 <path id="svg-abs" class="m-group" d="M41 60 L49 60 L49 69 L41 69 Z M51 60 L59 60 L59 69 L51 69 Z M41 71 L49 71 L49 80 L41 80 Z M51 71 L59 71 L59 80 L51 80 Z M42 82 L49 82 L49 92 L43 92 Z M51 82 L58 82 L57 92 L51 92 Z M34 60 C38 68 38 80 39 90 L32 78 Z M66 60 C62 68 62 80 61 90 L68 78 Z"/>
-
-                                <!-- Quadriceps / Legs Front -->
                                 <path id="svg-legs-fl" class="m-group" d="M34 118 C35 135 34 156 34 166 C39 167 45 166 46 153 C47 140 47 126 46 118 Z"/>
                                 <path id="svg-legs-fr" class="m-group" d="M66 118 C65 135 66 156 66 166 C61 167 55 166 54 153 C53 140 53 126 54 118 Z"/>
-
-                                <!-- Calves Front -->
                                 <path id="svg-calves-fl" class="m-group" d="M35 170 C33 180 34 196 36 204 C39 204 41 198 42 188 C43 178 41 171 39 170 Z"/>
                                 <path id="svg-calves-fr" class="m-group" d="M65 170 C67 180 66 196 64 204 C61 204 59 198 58 188 C57 178 59 171 61 170 Z"/>
                             </svg>
                         </div>
 
-                        <!-- BACK VIEW -->
                         <div style="text-align: center;">
                             <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">DOS</div>
                             <svg class="hevy-body-svg" viewBox="0 0 100 220">
                                 <circle class="m-head" cx="50" cy="18" r="9"/>
                                 <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
-
-                                <!-- Traps & Lats / Back -->
                                 <path id="svg-back" class="m-group" d="M41 36 L50 44 L59 36 L66 52 L60 82 L50 92 L40 82 L34 52 Z"/>
-
-                                <!-- Shoulders Back -->
                                 <path id="svg-shoulders-bl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
                                 <path id="svg-shoulders-br" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
-
-                                <!-- Triceps -->
                                 <path id="svg-triceps-l" class="m-group" d="M25 52 C27 58 28 66 28 72 C25 73 22 71 21 65 C21 58 23 53 25 52 Z"/>
                                 <path id="svg-triceps-r" class="m-group" d="M75 52 C73 58 72 66 72 72 C75 73 78 71 79 65 C79 58 77 53 75 52 Z"/>
-
-                                <!-- Forearms Back -->
                                 <path id="svg-forearms-bl" class="m-group" d="M21 76 C20 84 19 95 21 105 C24 105 26 100 27 92 C28 84 26 78 24 76 Z"/>
                                 <path id="svg-forearms-br" class="m-group" d="M79 76 C80 84 81 95 79 105 C76 105 74 100 73 92 C72 84 74 78 76 76 Z"/>
-
-                                <!-- Glutes & Hamstrings / Legs Back -->
                                 <path id="svg-legs-bl" class="m-group" d="M36 95 C42 95 48 97 48 111 C48 134 46 157 44 167 C39 167 35 151 35 124 C35 107 35 97 36 95 Z"/>
                                 <path id="svg-legs-br" class="m-group" d="M64 95 C58 95 52 97 52 111 C52 134 54 157 56 167 C61 167 65 151 65 124 C65 107 65 97 64 95 Z"/>
-
-                                <!-- Calves Back -->
                                 <path id="svg-calves-bl" class="m-group" d="M35 170 C32 178 33 194 36 204 C39 204 42 198 43 187 C44 177 41 171 39 170 Z"/>
                                 <path id="svg-calves-br" class="m-group" d="M65 170 C68 178 67 194 64 204 C61 204 58 198 57 187 C56 177 59 171 61 170 Z"/>
                             </svg>
@@ -850,14 +903,12 @@
                     <i class="fa-solid fa-bullseye"></i>
                 </div>
 
-                <!-- Weigh-in Warning Banner -->
                 <div class="warning-banner" id="weigh-warning-banner">
                     <span><i class="fa-solid fa-bell"></i> Status Pesée :</span>
                     <strong id="weigh-warning-text">Rappel : Pesée dans 3 jours</strong>
                 </div>
 
                 <div class="grid-2col">
-                    <!-- Left: Form & Target Config -->
                     <div>
                         <div class="section-header" style="font-size: 0.9rem;">Enregistrer une Pesée</div>
                         <form onsubmit="recordWeight(event)">
@@ -866,13 +917,11 @@
                                     <label>Poids (kg)</label>
                                     <input type="number" step="0.1" class="form-control" id="input-weight" placeholder="ex: 75.5" required>
                                 </div>
-
                                 <div class="form-group">
                                     <label>Masse Grasse (%)</label>
                                     <input type="number" step="0.1" class="form-control" id="input-bodyfat" placeholder="ex: 15.0" required>
                                 </div>
                             </div>
-
                             <button type="submit" class="btn-action" style="margin-bottom: 15px;">
                                 Valider la Pesée (+50 EXP)
                             </button>
@@ -894,12 +943,9 @@
                         </form>
                     </div>
 
-                    <!-- Right: Target Progress Bars & History -->
                     <div>
                         <div class="section-header" style="font-size: 0.9rem;">Progression vers les Objectifs</div>
-                        
                         <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 15px;">
-                            <!-- Weight Goal Bar -->
                             <div style="margin-bottom: 10px;">
                                 <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family:'Orbitron';">
                                     <span>Progression Poids</span>
@@ -909,8 +955,6 @@
                                     <div class="bar-inner" id="fill-goal-weight" style="width: 0%; background: linear-gradient(90deg, #10b981, #00f0ff);"></div>
                                 </div>
                             </div>
-
-                            <!-- Bodyfat Goal Bar -->
                             <div>
                                 <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family:'Orbitron';">
                                     <span>Progression % MG</span>
@@ -920,16 +964,13 @@
                                     <div class="bar-inner" id="fill-goal-bf" style="width: 0%; background: linear-gradient(90deg, #a855f7, #ffd700);"></div>
                                 </div>
                             </div>
-
                             <div style="font-size: 0.75rem; color: var(--gold); margin-top: 10px; font-family: 'Orbitron'; text-align: center;">
                                 <i class="fa-solid fa-trophy"></i> Récompense : +500 EXP lors de l'accomplissement des 2 objectifs !
                             </div>
                         </div>
 
                         <div class="section-header" style="font-size: 0.9rem;">Historique des Pesées</div>
-                        <div id="weight-history-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;">
-                            <!-- List JS -->
-                        </div>
+                        <div id="weight-history-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;"></div>
                     </div>
                 </div>
             </div>
@@ -940,7 +981,7 @@
         <footer>
             <div class="system-log" id="system-log">
                 <span style="color: var(--gold); font-weight: bold;">[SYSTÈME]</span>
-                <span id="log-message">Système initialisé. Réalisez vos objectifs.</span>
+                <span id="log-message">Système initialisé. Connexion requise.</span>
             </div>
         </footer>
     </div>
@@ -961,6 +1002,14 @@
     </div>
 
     <script>
+        // SUPABASE CONFIGURATION
+        const SUPABASE_URL = "https://kfvxenifwivauulzprbk.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_PhIm3_-pU9h42P0RN7XdKw_f6uj1AJA";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let authMode = 'login';
+
         const weeklyPrograms = {
             1: "Pec, Triceps, Épaules", 
             2: "Dos & Biceps",          
@@ -974,7 +1023,7 @@
         const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
         // GAME STATE
-        const state = {
+        let state = {
             level: 1,
             exp: 0,
             maxExp: 100,
@@ -1005,6 +1054,71 @@
             }
         };
 
+        // AUTHENTICATION LOGIC
+        function switchAuthTab(mode) {
+            authMode = mode;
+            document.getElementById('tab-btn-login').classList.toggle('active', mode === 'login');
+            document.getElementById('tab-btn-signup').classList.toggle('active', mode === 'signup');
+            document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'SE CONNECTER' : "S'INSCRIRE";
+            document.getElementById('auth-error').style.display = 'none';
+        }
+
+        async function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const errDiv = document.getElementById('auth-error');
+            errDiv.style.display = 'none';
+
+            let result;
+            if (authMode === 'login') {
+                result = await supabase.auth.signInWithPassword({ email, password });
+            } else {
+                result = await supabase.auth.signUp({ email, password });
+            }
+
+            if (result.error) {
+                errDiv.innerText = result.error.message;
+                errDiv.style.display = 'block';
+            } else if (result.data.user) {
+                currentUser = result.data.user;
+                document.getElementById('auth-screen').style.display = 'none';
+                await loadUserData();
+            }
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            location.reload();
+        }
+
+        // CLOUD STORAGE
+        async function saveUserData() {
+            if (!currentUser) return;
+            const { error } = await supabase
+                .from('profiles')
+                .upsert({ id: currentUser.id, state_data: state, updated_at: new Date() });
+            if (error) console.error("Erreur sauvegarde :", error);
+        }
+
+        async function loadUserData() {
+            if (!currentUser) return;
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('state_data')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (data && data.state_data) {
+                state = { ...state, ...data.state_data };
+                logMessage("Données du joueur chargées depuis le cloud.");
+            } else {
+                await saveUserData();
+                logMessage("Nouveau profil initialisé.");
+            }
+            updateUI();
+        }
+
         function getRank(level) {
             if (level < 15) return "Rang Civile";
             if (level < 25) return "Rang E";
@@ -1014,7 +1128,7 @@
             return "Rang S";
         }
 
-        // AUDIO SYNTHESIZER
+        // AUDIO
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(f1, f2, d) {
             try {
@@ -1079,13 +1193,11 @@
             document.getElementById('exp-text').innerText = `${state.exp} / ${state.maxExp} EXP`;
             document.getElementById('exp-fill').style.width = `${Math.min(100, (state.exp / state.maxExp) * 100)}%`;
 
-            // Attributes
             document.getElementById('stat-str').innerText = state.stats.strength;
             document.getElementById('stat-end').innerText = state.stats.endurance;
             document.getElementById('stat-mass').innerText = state.stats.muscleMass;
             document.getElementById('stat-will').innerText = state.stats.willpower;
 
-            // Quest Goals
             document.getElementById('creatine-status').innerText = state.creatineDone ? "Validé" : "Non pris";
             document.getElementById('creatine-status').style.color = state.creatineDone ? "var(--success-green)" : "var(--neon-cyan)";
             document.getElementById('chk-creatine').checked = state.creatineDone;
@@ -1104,35 +1216,21 @@
             const isReady = state.creatineDone && state.gripDone && state.steps >= 10000 && state.workoutDone && !state.questClaimed;
             document.getElementById('btn-claim-quest').disabled = !isReady;
 
-            // Weight & Goal Progress
-            if (state.weightHistory.length > 0) {
+            if (state.weightHistory && state.weightHistory.length > 0) {
                 const latest = state.weightHistory[0];
                 const initial = state.weightHistory[state.weightHistory.length - 1];
 
                 document.getElementById('display-last-weight').innerText = `${latest.weight} kg (${latest.bodyFat}%)`;
                 document.getElementById('display-lean-mass').innerText = `${latest.leanMass} kg`;
 
-                // Relative Weight Goal Progress
                 document.getElementById('label-goal-weight').innerText = `${latest.weight} / ${state.targetWeight} kg`;
-                let weightPct = 0;
-                if (initial.weight !== state.targetWeight) {
-                    weightPct = ((latest.weight - initial.weight) / (state.targetWeight - initial.weight)) * 100;
-                } else {
-                    weightPct = 100;
-                }
+                let weightPct = (initial.weight !== state.targetWeight) ? ((latest.weight - initial.weight) / (state.targetWeight - initial.weight)) * 100 : 100;
                 document.getElementById('fill-goal-weight').style.width = `${Math.min(100, Math.max(0, weightPct))}%`;
 
-                // Relative BodyFat Goal Progress
                 document.getElementById('label-goal-bf').innerText = `${latest.bodyFat} / ${state.targetBodyFat} %`;
-                let bfPct = 0;
-                if (initial.bodyFat !== state.targetBodyFat) {
-                    bfPct = ((latest.bodyFat - initial.bodyFat) / (state.targetBodyFat - initial.bodyFat)) * 100;
-                } else {
-                    bfPct = 100;
-                }
+                let bfPct = (initial.bodyFat !== state.targetBodyFat) ? ((latest.bodyFat - initial.bodyFat) / (state.targetBodyFat - initial.bodyFat)) * 100 : 100;
                 document.getElementById('fill-goal-bf').style.width = `${Math.min(100, Math.max(0, bfPct))}%`;
 
-                // SINGLE BONUS +500 EXP WHEN BOTH TARGETS ARE MET
                 if (weightPct >= 100 && bfPct >= 100 && !state.bothTargetsReached) {
                     state.bothTargetsReached = true;
                     addExp(500);
@@ -1145,20 +1243,17 @@
             updateAnatomyDiagram();
         }
 
-        // ANATOMY TOGGLES
         function toggleMuscle(group) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(600, 800, 0.05);
             state.musclesWorked[group] = !state.musclesWorked[group];
             
             const btn = document.getElementById(`btn-m-${group}`);
-            if (state.musclesWorked[group]) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
+            if (state.musclesWorked[group]) btn.classList.add('active');
+            else btn.classList.remove('active');
 
             updateAnatomyDiagram();
+            saveUserData();
         }
 
         function updateAnatomyDiagram() {
@@ -1184,12 +1279,12 @@
             }
         }
 
-        // QUEST ACTIONS
         function toggleCreatine() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(600, 800, 0.05);
             state.creatineDone = document.getElementById('chk-creatine').checked;
             updateUI();
+            saveUserData();
         }
 
         function toggleGrip() {
@@ -1197,6 +1292,7 @@
             playSound(600, 800, 0.05);
             state.gripDone = document.getElementById('chk-grip').checked;
             updateUI();
+            saveUserData();
         }
 
         function toggleWorkout() {
@@ -1213,6 +1309,7 @@
             }
 
             updateUI();
+            saveUserData();
         }
 
         function addSteps(amount) {
@@ -1227,6 +1324,7 @@
             }
 
             updateUI();
+            saveUserData();
         }
 
         function setCustomSteps() {
@@ -1245,6 +1343,7 @@
 
                 input.value = '';
                 updateUI();
+                saveUserData();
             }
         }
 
@@ -1258,10 +1357,10 @@
                 state.stats.willpower += 1;
                 addExp(150);
                 logMessage("Quête accomplie ! +150 EXP et +1 Point de Volonté.");
+                saveUserData();
             }
         }
 
-        // WEIGHT & GOALS ACTIONS
         function recordWeight(e) {
             e.preventDefault();
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -1274,6 +1373,7 @@
             const leanMassVal = parseFloat((weightVal * (1 - (bfVal / 100))).toFixed(1));
             state.stats.muscleMass = Math.round(leanMassVal);
 
+            if (!state.weightHistory) state.weightHistory = [];
             state.weightHistory.unshift({
                 date: dateStr,
                 weight: weightVal,
@@ -1287,6 +1387,7 @@
             addExp(50);
             logMessage(`Pesée enregistrée (${weightVal}kg). Masse Maigre : ${leanMassVal}kg.`);
             updateUI();
+            saveUserData();
         }
 
         function setGoals(e) {
@@ -1304,11 +1405,12 @@
 
             logMessage(`Objectifs mis à jour : ${state.targetWeight} kg / ${state.targetBodyFat}% MG.`);
             updateUI();
+            saveUserData();
         }
 
         function renderWeightHistory() {
             const list = document.getElementById('weight-history-list');
-            if (state.weightHistory.length === 0) {
+            if (!state.weightHistory || state.weightHistory.length === 0) {
                 list.innerHTML = `<div style="color: #5080a0; font-size: 0.85rem;">Aucune pesée enregistrée.</div>`;
                 return;
             }
@@ -1327,7 +1429,6 @@
             `).join('');
         }
 
-        // EXP & LEVEL UP
         function addExp(amount) {
             state.exp += amount;
             while (state.exp >= state.maxExp) {
@@ -1341,6 +1442,7 @@
                 document.getElementById('level-up-modal').classList.add('show');
             }
             updateUI();
+            saveUserData();
         }
 
         function closeLevelUpModal() {
@@ -1364,9 +1466,16 @@
             document.querySelectorAll('.nav-btn')[btnMap[tabId]].classList.add('active');
         }
 
-        window.onload = () => {
+        window.onload = async () => {
             initDailyConfig();
-            updateUI();
+            
+            // Auto check session
+            const { data } = await supabase.auth.getSession();
+            if (data.session) {
+                currentUser = data.session.user;
+                document.getElementById('auth-screen').style.display = 'none';
+                await loadUserData();
+            }
         };
     </script>
 </body>
