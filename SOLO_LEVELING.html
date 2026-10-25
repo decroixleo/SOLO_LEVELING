@@ -11,7 +11,7 @@
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Supabase JS Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
 
     <style>
         :root {
@@ -86,7 +86,6 @@
             z-index: 10;
         }
 
-        /* AUTH SCREEN DIRECT VISIBILITY */
         .auth-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -128,7 +127,6 @@
             padding-bottom: 4px;
         }
 
-        /* HEADER */
         header {
             display: flex;
             flex-direction: column;
@@ -241,7 +239,6 @@
             cursor: pointer;
         }
 
-        /* MAIN FRAME */
         .system-frame {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
@@ -310,7 +307,6 @@
         .label { color: #72a8c8; font-weight: 600; }
         .val { font-family: 'Orbitron', sans-serif; font-weight: 700; color: #fff; }
 
-        /* BARS */
         .bar-container { margin-top: 15px; }
         .bar-info { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; font-family: 'Orbitron'; }
         .bar-outer {
@@ -326,7 +322,6 @@
             transition: width 0.4s ease;
         }
 
-        /* QUEST STYLES */
         .quest-box {
             border: 1px solid var(--neon-cyan);
             background: rgba(0, 15, 30, 0.6);
@@ -386,7 +381,6 @@
             cursor: pointer;
         }
 
-        /* FORM CONTROLS */
         .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; text-align: left; }
         .form-group label { font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: var(--neon-cyan); }
         .form-control {
@@ -401,7 +395,6 @@
         }
         .form-control:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px var(--accent-glow); }
 
-        /* WARNING BANNER */
         .warning-banner {
             display: flex;
             flex-direction: column;
@@ -430,7 +423,6 @@
             color: var(--gold);
         }
 
-        /* HEVY STYLE ANATOMY DIAGRAM STYLES */
         .hevy-anatomy-container {
             display: flex;
             flex-direction: row;
@@ -512,7 +504,6 @@
             box-shadow: 0 0 10px var(--accent-glow);
         }
 
-        /* FOOTER & LOG */
         footer {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
@@ -583,7 +574,6 @@
             border-color: #666;
         }
 
-        /* LEVEL UP MODAL */
         .level-up-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -616,14 +606,12 @@
 </head>
 <body>
 
-    <!-- AUTHENTICATION OVERLAY WITHOUT TABS -->
     <div class="auth-overlay" id="auth-screen">
         <div class="auth-box">
             <div class="auth-title"><i class="fa-solid fa-shield-halved"></i> IDENTIFICATION DU JOUEUR</div>
             
             <div id="auth-error" style="color: var(--danger-red); font-size: 0.85rem; margin-bottom: 12px; display: none; background: rgba(255,0,0,0.15); padding: 10px; border: 1px solid var(--danger-red); text-align: left; word-break: break-word;"></div>
 
-            <!-- FORM 1 : SE CONNECTER -->
             <div class="auth-section-title"><i class="fa-solid fa-right-to-bracket"></i> DÉJÀ UN COMPTE ?</div>
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
@@ -639,7 +627,6 @@
 
             <div style="margin: 20px 0; border-top: 1px dashed rgba(0,210,255,0.3);"></div>
 
-            <!-- FORM 2 : S'INSCRIRE -->
             <div class="auth-section-title" style="color: var(--neon-cyan);"><i class="fa-solid fa-user-plus"></i> NOUVEAU JOUEUR ?</div>
             <form onsubmit="handleSignup(event)">
                 <div class="form-group">
@@ -658,7 +645,6 @@
     <div class="system-glow"></div>
 
     <div class="system-container">
-        <!-- HEADER -->
         <header>
             <div class="title-group">
                 <i class="fa-solid fa-bolt system-icon"></i>
@@ -681,10 +667,8 @@
             <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
         </header>
 
-        <!-- MAIN FRAME -->
         <main class="system-frame">
 
-            <!-- TAB 1: STATUS -->
             <div id="tab-status" class="tab-content active">
                 <div class="grid-2col">
                     <div>
@@ -752,7 +736,6 @@
                 </div>
             </div>
 
-            <!-- TAB 2: DAILY QUEST -->
             <div id="tab-quest" class="tab-content">
                 <div class="quest-box">
                     <div style="text-align: center; border-bottom: 2px double var(--neon-cyan); padding-bottom: 10px; margin-bottom: 15px;">
@@ -833,7 +816,6 @@
                 </div>
             </div>
 
-            <!-- TAB 3: WORKOUT & HEVY ANATOMY MAP -->
             <div id="tab-workout" class="tab-content">
                 <div class="section-header">
                     <span>Programme & Carte Musculaire</span>
@@ -912,7 +894,6 @@
                 </div>
             </div>
 
-            <!-- TAB 4: WEIGH-IN & TARGET GOALS -->
             <div id="tab-weighin" class="tab-content">
                 <div class="section-header">
                     <span>Composition Corporelle & Objectifs (+500 EXP)</span>
@@ -993,7 +974,6 @@
 
         </main>
 
-        <!-- FOOTER LOG -->
         <footer>
             <div class="system-log" id="system-log">
                 <span style="color: var(--gold); font-weight: bold;">[SYSTÈME]</span>
@@ -1002,7 +982,6 @@
         </footer>
     </div>
 
-    <!-- LEVEL UP MODAL -->
     <div class="level-up-overlay" id="level-up-modal">
         <div class="level-up-box">
             <h2 style="font-family: 'Orbitron'; font-size: 2rem; color: #fff; text-shadow: 0 0 20px var(--neon-blue); margin-bottom: 8px;">LEVEL UP !</h2>
@@ -1018,9 +997,9 @@
     </div>
 
     <script>
-        // SUPABASE CONFIGURATION
+        // CONFIGURATION SUPABASE OFFICIELLE
         const SUPABASE_URL = "https://kfvxenifwivauulzprbk.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_PhIm3_-pU9h42P0RN7XdKw_f6uj1AJA";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmdnhlbmlmd2l2YXV1bHpwcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5Mjc0NTUsImV4cCI6MjEwODUwMzQ1NX0.0D6D41QDKjnDaNHB_unD8QxJGKTebFsH3W-01nSKN3A";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentUser = null;
@@ -1037,7 +1016,6 @@
 
         const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
-        // GAME STATE
         let state = {
             level: 1,
             exp: 0,
@@ -1052,24 +1030,10 @@
             targetWeight: 80,
             targetBodyFat: 12,
             bothTargetsReached: false,
-            stats: {
-                strength: 0, 
-                endurance: 0,
-                muscleMass: 0,
-                willpower: 0 
-            },
-            musclesWorked: {
-                pecs: false,
-                back: false,
-                shoulders: false,
-                biceps: false,
-                triceps: false,
-                abs: false,
-                legs: false
-            }
+            stats: { strength: 0, endurance: 0, muscleMass: 0, willpower: 0 },
+            musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false }
         };
 
-        // SEPARATED AUTH LOGIC WITH DETAILED ERROR MESSAGES
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -1130,12 +1094,9 @@
                     errDiv.innerText = "Erreur : " + error.message;
                     errDiv.style.display = 'block';
                 } else if (data.user) {
-                    // Check if confirmation email is required by Supabase
-                    if (data.session === null && data.user.identities && data.user.identities.length === 0) {
-                        errDiv.innerText = "Cet e-mail existe déjà. Essayez de vous connecter.";
-                        errDiv.style.display = 'block';
-                    } else if (data.session === null) {
-                        errDiv.innerText = "Un e-mail de confirmation a été envoyé. Veuillez valider votre boîte mail.";
+                    if (data.session === null) {
+                        errDiv.style.color = "var(--gold)";
+                        errDiv.innerText = "Un e-mail de confirmation vient de vous être envoyé ! Veuillez cliquer sur le lien reçu par mail pour activer le compte.";
                         errDiv.style.display = 'block';
                     } else {
                         currentUser = data.user;
@@ -1146,7 +1107,7 @@
             } catch (err) {
                 btn.disabled = false;
                 btn.innerText = "CRÉER MON COMPTE";
-                errDiv.innerText = "Erreur réseau : " + err.message;
+                errDiv.innerText = "Erreur système : " + err.message;
                 errDiv.style.display = 'block';
             }
         }
@@ -1156,7 +1117,6 @@
             location.reload();
         }
 
-        // CLOUD STORAGE
         async function saveUserData() {
             if (!currentUser) return;
             const { error } = await supabase
@@ -1192,7 +1152,6 @@
             return "Rang S";
         }
 
-        // AUDIO
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(f1, f2, d) {
             try {
