@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Interface Système - Solo Leveling Musculation</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,7 @@
             --neon-cyan: #00d2ff;
             --hevy-blue: #0095ff;
             --dark-blue: #020b18;
-            --panel-bg: rgba(4, 18, 38, 0.88);
+            --panel-bg: rgba(4, 18, 38, 0.92);
             --panel-border: #00a8ff;
             --accent-glow: rgba(0, 240, 255, 0.4);
             --gold: #ffd700;
@@ -25,7 +25,6 @@
             --danger-red: #ff3366;
             --success-green: #10b981;
             --muscle-base: #a0acba;
-            --muscle-shadow: #4b5866;
             --muscle-body-bg: #e2e8f0;
         }
 
@@ -34,6 +33,7 @@
             margin: 0;
             padding: 0;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -48,9 +48,8 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
+            align-items: flex-start;
+            padding: 10px;
             position: relative;
         }
 
@@ -63,14 +62,14 @@
             background-size: 100% 4px;
             z-index: 99;
             pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
         .system-glow {
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 85vw; height: 85vh;
+            width: 95vw; height: 95vh;
             background: radial-gradient(ellipse at center, rgba(0, 150, 255, 0.1) 0%, rgba(0,0,0,0) 70%);
             pointer-events: none;
             z-index: 0;
@@ -81,32 +80,42 @@
             max-width: 1100px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             position: relative;
             z-index: 10;
         }
 
-        /* HEADER */
+        /* HEADER & RESPONSIVE NAV */
         header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 12px;
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
-            padding: 12px 25px;
+            padding: 12px 15px;
             box-shadow: 0 0 15px var(--accent-glow);
-            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
             backdrop-filter: blur(8px);
+        }
+
+        @media (min-width: 768px) {
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 25px;
+                clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+            }
         }
 
         .title-group {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            gap: 10px;
         }
 
         .system-icon {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: var(--neon-blue);
             text-shadow: var(--text-glow);
             animation: pulse 2s infinite alternate;
@@ -114,31 +123,55 @@
 
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
+            font-size: 1rem;
+            letter-spacing: 1.5px;
             color: #fff;
             text-shadow: var(--text-glow);
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 1.2rem; text-align: left; }
         }
 
         nav {
-            display: flex;
-            gap: 8px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            nav {
+                display: flex;
+                width: auto;
+                gap: 8px;
+            }
         }
 
         .nav-btn {
             background: rgba(0, 40, 80, 0.5);
             border: 1px solid rgba(0, 210, 255, 0.4);
             color: #8be3ff;
-            padding: 8px 16px;
+            padding: 10px 8px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .nav-btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+                clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            }
         }
 
         .nav-btn:hover {
@@ -151,7 +184,7 @@
             background: var(--neon-blue);
             color: var(--dark-blue);
             border-color: #fff;
-            box-shadow: 0 0 15px var(--neon-blue);
+            box-shadow: 0 0 12px var(--neon-blue);
             font-weight: 800;
         }
 
@@ -159,11 +192,17 @@
         .system-frame {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
-            min-height: 520px;
-            padding: 25px;
+            min-height: 480px;
+            padding: 15px;
             box-shadow: 0 0 25px rgba(0, 150, 255, 0.25);
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
             backdrop-filter: blur(10px);
+        }
+
+        @media (min-width: 768px) {
+            .system-frame {
+                padding: 25px;
+                clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            }
         }
 
         .tab-content {
@@ -175,24 +214,42 @@
             display: block;
         }
 
+        .grid-2col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2col {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+        }
+
         .section-header {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             color: var(--neon-cyan);
             border-bottom: 1px solid rgba(0, 210, 255, 0.3);
             padding-bottom: 6px;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .section-header { font-size: 1.1rem; }
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
             padding: 8px 0;
             border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
         }
@@ -202,9 +259,9 @@
 
         /* BARS */
         .bar-container { margin-top: 15px; }
-        .bar-info { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; font-family: 'Orbitron'; }
+        .bar-info { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; font-family: 'Orbitron'; }
         .bar-outer {
-            width: 100%; height: 16px;
+            width: 100%; height: 14px;
             background: rgba(0, 20, 40, 0.8);
             border: 1px solid rgba(0, 210, 255, 0.4);
             padding: 1px;
@@ -220,28 +277,39 @@
         .quest-box {
             border: 1px solid var(--neon-cyan);
             background: rgba(0, 15, 30, 0.6);
-            padding: 20px;
+            padding: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .quest-box { padding: 20px; }
         }
 
         .quest-goals {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .goal-item {
-            display: grid;
-            grid-template-columns: 1.8fr 1.2fr auto;
-            align-items: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             background: rgba(0, 30, 60, 0.4);
-            padding: 12px 15px;
+            padding: 12px;
             border: 1px solid rgba(0, 210, 255, 0.2);
-            gap: 10px;
         }
 
-        .goal-name { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-        .goal-progress { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--neon-cyan); }
+        @media (min-width: 576px) {
+            .goal-item {
+                display: grid;
+                grid-template-columns: 1.8fr 1fr auto;
+                align-items: center;
+            }
+        }
+
+        .goal-name { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .goal-progress { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--neon-cyan); }
 
         .btn-quest-action {
             background: rgba(0, 210, 255, 0.2);
@@ -259,39 +327,48 @@
             color: #000;
         }
 
-        /* CHECKBOX */
         .custom-checkbox {
-            width: 22px; height: 22px;
+            width: 24px; height: 24px;
             accent-color: var(--neon-blue);
             cursor: pointer;
         }
 
         /* FORM CONTROLS */
-        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
-        .form-group label { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--neon-cyan); }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+        .form-group label { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--neon-cyan); }
         .form-control {
             background: rgba(0, 25, 50, 0.7);
             border: 1px solid rgba(0, 210, 255, 0.4);
             color: #fff;
-            padding: 10px 15px;
+            padding: 10px 12px;
             font-family: 'Rajdhani', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1rem;
             outline: none;
+            width: 100%;
         }
         .form-control:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px var(--accent-glow); }
 
         /* WARNING BANNER */
         .warning-banner {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 6px;
             background: rgba(255, 51, 102, 0.15);
             border: 1px solid var(--danger-red);
-            padding: 12px 18px;
+            padding: 10px 15px;
             color: #ff99b3;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        @media (min-width: 576px) {
+            .warning-banner {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+            }
         }
 
         .warning-banner.alert {
@@ -303,19 +380,30 @@
         /* HEVY STYLE ANATOMY DIAGRAM STYLES */
         .hevy-anatomy-container {
             display: flex;
+            flex-direction: row;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 10px;
             background: #000000;
             border: 1px solid rgba(0, 210, 255, 0.3);
             border-radius: 8px;
-            padding: 20px 10px;
+            padding: 15px 5px;
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 210, 255, 0.15);
+            width: 100%;
+            overflow-x: auto;
         }
 
         .hevy-body-svg {
-            width: 170px;
-            height: 380px;
+            width: 140px;
+            height: 310px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 576px) {
+            .hevy-body-svg {
+                width: 165px;
+                height: 360px;
+            }
         }
 
         .m-head, .m-base {
@@ -336,7 +424,6 @@
             fill: #70b8ff;
         }
 
-        /* HEVY NEON BLUE HIGHLIGHT FOR ACTIVE MUSCLES */
         .m-group.active {
             fill: #0088ff !important;
             stroke: #00f0ff !important;
@@ -347,17 +434,17 @@
         .muscle-toggle-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .btn-muscle {
             background: rgba(0, 30, 60, 0.6);
             border: 1px solid rgba(0, 210, 255, 0.3);
             color: #8be3ff;
-            padding: 8px 12px;
+            padding: 8px 10px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -376,28 +463,45 @@
         footer {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
-            padding: 10px 20px;
+            padding: 10px 15px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 8px;
             align-items: center;
+            text-align: center;
             box-shadow: 0 0 15px var(--accent-glow);
-            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
         }
 
-        .system-log { color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: 0.85rem; }
+        @media (min-width: 768px) {
+            footer {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+                clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            }
+        }
+
+        .system-log { color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: 0.8rem; }
 
         .btn-action {
             background: linear-gradient(180deg, rgba(0,210,255,0.3) 0%, rgba(0,120,215,0.5) 100%);
             border: 1px solid var(--neon-blue);
             color: #fff;
-            padding: 10px 20px;
+            padding: 10px 16px;
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             letter-spacing: 1px;
             cursor: pointer;
             transition: all 0.2s;
-            clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .btn-action {
+                width: auto;
+                clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+            }
         }
 
         .btn-action:hover:not(:disabled) {
@@ -416,7 +520,7 @@
         .level-up-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 11, 24, 0.85);
+            background: rgba(2, 11, 24, 0.88);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -424,6 +528,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
+            padding: 20px;
         }
 
         .level-up-overlay.show { opacity: 1; pointer-events: auto; }
@@ -431,10 +536,11 @@
         .level-up-box {
             border: 2px solid var(--neon-blue);
             background: rgba(4, 25, 50, 0.95);
-            padding: 40px 60px;
+            padding: 30px 25px;
             text-align: center;
-            box-shadow: 0 0 50px var(--neon-blue);
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+            box-shadow: 0 0 40px var(--neon-blue);
+            width: 100%;
+            max-width: 400px;
         }
 
         @keyframes pulse { 0% { opacity: 0.7; } 100% { opacity: 1; text-shadow: 0 0 15px var(--neon-blue); } }
@@ -457,13 +563,13 @@
                     <i class="fa-solid fa-user"></i> Statut
                 </button>
                 <button class="nav-btn" onclick="switchTab('quest')">
-                    <i class="fa-solid fa-scroll"></i> Quête Quotidienne
+                    <i class="fa-solid fa-scroll"></i> Quête
                 </button>
                 <button class="nav-btn" onclick="switchTab('workout')">
-                    <i class="fa-solid fa-child-reaching"></i> Séance & Anatomie
+                    <i class="fa-solid fa-child-reaching"></i> Anatomie
                 </button>
                 <button class="nav-btn" onclick="switchTab('weighin')">
-                    <i class="fa-solid fa-weight-scale"></i> Pesée & Objectifs
+                    <i class="fa-solid fa-weight-scale"></i> Pesée
                 </button>
             </nav>
         </header>
@@ -473,7 +579,7 @@
 
             <!-- TAB 1: STATUS -->
             <div id="tab-status" class="tab-content active">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                <div class="grid-2col">
                     <!-- Left: Profile -->
                     <div>
                         <div class="section-header">
@@ -482,18 +588,18 @@
                         </div>
                         <div class="info-row">
                             <span class="label">Niveau :</span>
-                            <span class="val" id="player-level" style="font-size: 1.6rem; color: var(--neon-blue);">1</span>
+                            <span class="val" id="player-level" style="font-size: 1.5rem; color: var(--neon-blue);">1</span>
                         </div>
                         <div class="info-row">
                             <span class="label">Rang Officiel :</span>
-                            <span class="val" id="player-rank" style="color: var(--gold); font-size: 1.2rem;">Rang Civile</span>
+                            <span class="val" id="player-rank" style="color: var(--gold); font-size: 1.1rem;">Rang Civile</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Dernier Poids Enregistré :</span>
+                            <span class="label">Dernier Poids :</span>
                             <span class="val" id="display-last-weight">-- kg</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Masse Maigre Estimée :</span>
+                            <span class="label">Masse Maigre :</span>
                             <span class="val" id="display-lean-mass">-- kg</span>
                         </div>
 
@@ -509,7 +615,7 @@
                         </div>
 
                         <!-- TEST BUTTON -->
-                        <button class="btn-action" style="margin-top: 15px; width: 100%;" onclick="addExp(50)">
+                        <button class="btn-action" style="margin-top: 15px;" onclick="addExp(50)">
                             +50 EXP (Test rapide)
                         </button>
                     </div>
@@ -520,23 +626,23 @@
                             <span>Attributs Physiques Réels</span>
                             <i class="fa-solid fa-dumbbell"></i>
                         </div>
-                        <p style="font-size: 0.85rem; color: #72a8c8; margin-bottom: 12px;">
-                            * Les statistiques démarrent à 0 et augmentent selon vos séances, vos pas, vos pesées et vos quêtes.
+                        <p style="font-size: 0.8rem; color: #72a8c8; margin-bottom: 10px;">
+                            * Les statistiques évoluent selon vos séances, pas, pesées et quêtes.
                         </p>
                         <div class="info-row">
-                            <span class="label" title="Basé sur les séances accomplies"><i class="fa-solid fa-dumbbell"></i> Force (Séances)</span>
+                            <span class="label"><i class="fa-solid fa-dumbbell"></i> Force (Séances)</span>
                             <span class="val" id="stat-str">0</span>
                         </div>
                         <div class="info-row">
-                            <span class="label" title="Basé sur la validation des 10 000 pas"><i class="fa-solid fa-heart-pulse"></i> Endurance (10k Pas)</span>
+                            <span class="label"><i class="fa-solid fa-heart-pulse"></i> Endurance (10k Pas)</span>
                             <span class="val" id="stat-end">0</span>
                         </div>
                         <div class="info-row">
-                            <span class="label" title="Basé sur votre masse maigre (Poids x %MG)"><i class="fa-solid fa-child"></i> Masse Musculaire</span>
+                            <span class="label"><i class="fa-solid fa-child"></i> Masse Musculaire</span>
                             <span class="val" id="stat-mass">0</span>
                         </div>
                         <div class="info-row">
-                            <span class="label" title="Basé sur les quêtes quotidiennes réussies"><i class="fa-solid fa-fire"></i> Volonté (Quêtes)</span>
+                            <span class="label"><i class="fa-solid fa-fire"></i> Volonté (Quêtes)</span>
                             <span class="val" id="stat-will">0</span>
                         </div>
                     </div>
@@ -546,67 +652,67 @@
             <!-- TAB 2: DAILY QUEST -->
             <div id="tab-quest" class="tab-content">
                 <div class="quest-box">
-                    <div style="text-align: center; border-bottom: 2px double var(--neon-cyan); padding-bottom: 12px; margin-bottom: 20px;">
-                        <div style="font-family: 'Orbitron'; color: var(--neon-blue); font-size: 1.4rem; letter-spacing: 2px;">
+                    <div style="text-align: center; border-bottom: 2px double var(--neon-cyan); padding-bottom: 10px; margin-bottom: 15px;">
+                        <div style="font-family: 'Orbitron'; color: var(--neon-blue); font-size: 1.2rem; letter-spacing: 1px;">
                             <i class="fa-solid fa-exclamation-triangle"></i> QUÊTE QUOTIDIENNE
                         </div>
-                        <div style="font-size: 0.95rem; color: #a0c0d0; margin-top: 4px;">
-                            Aujourd'hui : <strong id="today-name" style="color: var(--gold);">Lundi</strong> — Programme : <span id="today-program-title" style="color: #fff;">Pec, Triceps, Épaules</span>
+                        <div style="font-size: 0.85rem; color: #a0c0d0; margin-top: 4px;">
+                            Aujourd'hui : <strong id="today-name" style="color: var(--gold);">Lundi</strong> — <span id="today-program-title" style="color: #fff;">Pec, Triceps, Épaules</span>
                         </div>
                     </div>
 
                     <div class="quest-goals">
                         <!-- Goal 1: Creatine -->
                         <div class="goal-item">
-                            <span class="goal-name">
+                            <div class="goal-name">
                                 <i class="fa-solid fa-prescription-bottle-medical" style="color: var(--neon-blue);"></i>
                                 Créatine (6g)
-                            </span>
-                            <span class="goal-progress" id="creatine-status">Non pris</span>
-                            <div>
+                            </div>
+                            <div class="goal-progress" id="creatine-status">Non pris</div>
+                            <div style="align-self: flex-end;">
                                 <input type="checkbox" class="custom-checkbox" id="chk-creatine" onchange="toggleCreatine()">
                             </div>
                         </div>
 
                         <!-- Goal 2: Steps -->
-                        <div class="goal-item" style="grid-template-columns: 1.5fr 1fr auto;">
-                            <span class="goal-name">
+                        <div class="goal-item">
+                            <div class="goal-name">
                                 <i class="fa-solid fa-shoe-prints" style="color: var(--success-green);"></i>
                                 Marche (10 000 pas)
-                            </span>
-                            <span class="goal-progress" id="steps-count">0 / 10 000</span>
-                            <div style="display: flex; flex-direction: column; gap: 5px; align-items: flex-end;">
-                                <div style="display: flex; gap: 4px;">
+                            </div>
+                            <div class="goal-progress" id="steps-count">0 / 10k</div>
+                            <div style="display: flex; flex-direction: column; gap: 5px; width: 100%;">
+                                <div style="display: flex; gap: 4px; justify-content: flex-end;">
                                     <button class="btn-quest-action" onclick="addSteps(-5000)">-5k</button>
                                     <button class="btn-quest-action" onclick="addSteps(-1000)">-1k</button>
                                     <button class="btn-quest-action" onclick="addSteps(1000)">+1k</button>
                                     <button class="btn-quest-action" onclick="addSteps(5000)">+5k</button>
                                 </div>
-                                <div style="display: flex; gap: 5px; align-items: center; margin-top: 2px;">
-                                    <input type="number" id="input-custom-steps" placeholder="Saisie ex: 8500" style="width: 100px; padding: 2px 5px; background: rgba(0,20,40,0.8); border: 1px solid var(--neon-cyan); color: #fff; font-family: 'Orbitron'; font-size: 0.75rem;">
+                                <div style="display: flex; gap: 5px; align-items: center; justify-content: flex-end;">
+                                    <input type="number" id="input-custom-steps" placeholder="ex: 8500" style="width: 90px; padding: 4px; background: rgba(0,20,40,0.8); border: 1px solid var(--neon-cyan); color: #fff; font-family: 'Orbitron'; font-size: 0.75rem;">
                                     <button class="btn-quest-action" onclick="setCustomSteps()">OK</button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Goal 3: Daily Workout Session (Hidden on Weekends) -->
+                        <!-- Goal 3: Daily Workout Session -->
                         <div class="goal-item" id="workout-goal-container">
-                            <span class="goal-name">
+                            <div class="goal-name">
                                 <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
                                 <span id="workout-goal-label">Séance du jour</span>
-                            </span>
-                            <span class="goal-progress" id="workout-status">À effectuer</span>
-                            <div>
+                            </div>
+                            <div class="goal-progress" id="workout-status">À effectuer</div>
+                            <div style="align-self: flex-end;">
                                 <input type="checkbox" class="custom-checkbox" id="chk-workout" onchange="toggleWorkout()">
                             </div>
                         </div>
                     </div>
 
-                    <div style="border-top: 1px solid rgba(0, 210, 255, 0.3); padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <span style="color: #a0c0d0; font-size: 0.9rem;">Récompenses de Quête :</span>
-                            <div style="color: var(--gold); font-family: 'Orbitron'; font-size: 1.1rem; margin-top: 3px;">
-                                +150 EXP • +1 Point de Volonté
+                    <div style="border-top: 1px solid rgba(0, 210, 255, 0.3); padding-top: 12px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                        <div style="text-align: center;">
+                            <span style="color: #a0c0d0; font-size: 0.85rem;">Récompenses de Quête :</span>
+                            <div style="color: var(--gold); font-family: 'Orbitron'; font-size: 1rem; margin-top: 2px;">
+                                +150 EXP • +1 Volonté
                             </div>
                         </div>
                         <button class="btn-action" id="btn-claim-quest" disabled onclick="claimDailyQuest()">
@@ -619,26 +725,26 @@
             <!-- TAB 3: WORKOUT & HEVY ANATOMY MAP -->
             <div id="tab-workout" class="tab-content">
                 <div class="section-header">
-                    <span>Programme de la Semaine & Carte Musculaire</span>
+                    <span>Programme & Carte Musculaire</span>
                     <i class="fa-solid fa-child-reaching"></i>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px;">
+                <div class="grid-2col">
                     <!-- Left: Weekly Schedule & Manual Toggles -->
                     <div>
-                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 15px; margin-bottom: 15px;">
-                            <h3 style="font-family:'Orbitron'; font-size: 0.95rem; color: var(--gold); margin-bottom: 10px;">Planning Hebdomadaire</h3>
-                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 0.95rem;">
-                                <li><strong style="color:var(--neon-cyan);">Lundi & Jeudi :</strong> Pecs, Triceps, Épaules</li>
-                                <li><strong style="color:var(--neon-cyan);">Mardi & Vendredi :</strong> Dos & Biceps</li>
-                                <li><strong style="color:var(--neon-cyan);">Mercredi :</strong> Jambes & Abdominaux</li>
-                                <li><strong style="color:var(--neon-cyan);">Samedi & Dimanche :</strong> Repos / Récupération</li>
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.85rem; color: var(--gold); margin-bottom: 8px;">Planning Hebdomadaire</h3>
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem;">
+                                <li><strong style="color:var(--neon-cyan);">Lun & Jeu :</strong> Pecs, Triceps, Épaules</li>
+                                <li><strong style="color:var(--neon-cyan);">Mar & Ven :</strong> Dos & Biceps</li>
+                                <li><strong style="color:var(--neon-cyan);">Mer :</strong> Jambes & Abdominaux</li>
+                                <li><strong style="color:var(--neon-cyan);">Sam & Dim :</strong> Repos / Récupération</li>
                             </ul>
                         </div>
 
-                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 15px;">
-                            <h3 style="font-family:'Orbitron'; font-size: 0.95rem; color: #fff; margin-bottom: 8px;">Muscles Travaillés cette Semaine</h3>
-                            <p style="font-size: 0.8rem; color: #72a8c8; margin-bottom: 10px;">Les muscles illuminés en bleu néon style Hevy ont été entraînés.</p>
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.85rem; color: #fff; margin-bottom: 6px;">Muscles Travaillés</h3>
+                            <p style="font-size: 0.75rem; color: #72a8c8; margin-bottom: 8px;">Les muscles illuminés en bleu néon ont été entraînés.</p>
                             
                             <div class="muscle-toggle-grid">
                                 <button class="btn-muscle" id="btn-m-pecs" onclick="toggleMuscle('pecs')">Pectoraux <i class="fa-solid fa-check"></i></button>
@@ -656,9 +762,8 @@
                     <div class="hevy-anatomy-container">
                         <!-- FRONT VIEW -->
                         <div style="text-align: center;">
-                            <div style="font-family:'Orbitron'; font-size: 0.8rem; color: #8be3ff; margin-bottom: 6px; letter-spacing: 1px;">FACE</div>
+                            <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">FACE</div>
                             <svg class="hevy-body-svg" viewBox="0 0 100 220">
-                                <!-- Base Body / Head / Joints -->
                                 <circle class="m-head" cx="50" cy="18" r="9"/>
                                 <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
 
@@ -693,9 +798,8 @@
 
                         <!-- BACK VIEW -->
                         <div style="text-align: center;">
-                            <div style="font-family:'Orbitron'; font-size: 0.8rem; color: #8be3ff; margin-bottom: 6px; letter-spacing: 1px;">DOS</div>
+                            <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">DOS</div>
                             <svg class="hevy-body-svg" viewBox="0 0 100 220">
-                                <!-- Base Body / Head -->
                                 <circle class="m-head" cx="50" cy="18" r="9"/>
                                 <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
 
@@ -730,7 +834,7 @@
             <!-- TAB 4: WEIGH-IN & TARGET GOALS -->
             <div id="tab-weighin" class="tab-content">
                 <div class="section-header">
-                    <span>Composition Corporelle & Objectifs (+500 EXP Bonus)</span>
+                    <span>Composition Corporelle & Objectifs (+500 EXP)</span>
                     <i class="fa-solid fa-bullseye"></i>
                 </div>
 
@@ -740,10 +844,10 @@
                     <strong id="weigh-warning-text">Rappel : Pesée dans 3 jours</strong>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                <div class="grid-2col">
                     <!-- Left: Form & Target Config -->
                     <div>
-                        <div class="section-header" style="font-size: 0.95rem;">Enregistrer une Pesée</div>
+                        <div class="section-header" style="font-size: 0.9rem;">Enregistrer une Pesée</div>
                         <form onsubmit="recordWeight(event)">
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                 <div class="form-group">
@@ -757,12 +861,12 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn-action" style="width: 100%; margin-bottom: 15px;">
+                            <button type="submit" class="btn-action" style="margin-bottom: 15px;">
                                 Valider la Pesée (+50 EXP)
                             </button>
                         </form>
 
-                        <div class="section-header" style="font-size: 0.95rem; margin-top: 15px;">Définir mes Objectifs Visés</div>
+                        <div class="section-header" style="font-size: 0.9rem; margin-top: 10px;">Définir mes Objectifs Visés</div>
                         <form onsubmit="setGoals(event)">
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                 <div class="form-group">
@@ -780,12 +884,12 @@
 
                     <!-- Right: Target Progress Bars & History -->
                     <div>
-                        <div class="section-header" style="font-size: 0.95rem;">Progression vers les Objectifs</div>
+                        <div class="section-header" style="font-size: 0.9rem;">Progression vers les Objectifs</div>
                         
-                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 15px; margin-bottom: 15px;">
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 15px;">
                             <!-- Weight Goal Bar -->
-                            <div style="margin-bottom: 12px;">
-                                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-family:'Orbitron';">
+                            <div style="margin-bottom: 10px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family:'Orbitron';">
                                     <span>Progression Poids</span>
                                     <span id="label-goal-weight">-- / -- kg</span>
                                 </div>
@@ -796,7 +900,7 @@
 
                             <!-- Bodyfat Goal Bar -->
                             <div>
-                                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-family:'Orbitron';">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family:'Orbitron';">
                                     <span>Progression % MG</span>
                                     <span id="label-goal-bf">-- / -- %</span>
                                 </div>
@@ -805,12 +909,12 @@
                                 </div>
                             </div>
 
-                            <div style="font-size: 0.8rem; color: var(--gold); margin-top: 10px; font-family: 'Orbitron'; text-align: center;">
+                            <div style="font-size: 0.75rem; color: var(--gold); margin-top: 10px; font-family: 'Orbitron'; text-align: center;">
                                 <i class="fa-solid fa-trophy"></i> Récompense : +500 EXP lors de l'accomplissement des 2 objectifs !
                             </div>
                         </div>
 
-                        <div class="section-header" style="font-size: 0.95rem;">Historique des Pesées</div>
+                        <div class="section-header" style="font-size: 0.9rem;">Historique des Pesées</div>
                         <div id="weight-history-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;">
                             <!-- List JS -->
                         </div>
@@ -824,7 +928,7 @@
         <footer>
             <div class="system-log" id="system-log">
                 <span style="color: var(--gold); font-weight: bold;">[SYSTÈME]</span>
-                <span id="log-message">Système initialisé. Réalisez vos objectifs pour débloquer votre potentiel.</span>
+                <span id="log-message">Système initialisé. Réalisez vos objectifs.</span>
             </div>
         </footer>
     </div>
@@ -832,14 +936,14 @@
     <!-- LEVEL UP MODAL -->
     <div class="level-up-overlay" id="level-up-modal">
         <div class="level-up-box">
-            <h2 style="font-family: 'Orbitron'; font-size: 2.5rem; color: #fff; text-shadow: 0 0 20px var(--neon-blue); margin-bottom: 10px;">LEVEL UP !</h2>
-            <div style="font-size: 1.3rem; color: var(--neon-cyan); font-family: 'Orbitron'; margin-bottom: 10px;">
+            <h2 style="font-family: 'Orbitron'; font-size: 2rem; color: #fff; text-shadow: 0 0 20px var(--neon-blue); margin-bottom: 8px;">LEVEL UP !</h2>
+            <div style="font-size: 1.1rem; color: var(--neon-cyan); font-family: 'Orbitron'; margin-bottom: 6px;">
                 Niveau <span id="modal-level-val">2</span> Atteint
             </div>
-            <div style="font-size: 1.1rem; color: var(--gold); font-family: 'Orbitron'; margin-bottom: 20px;" id="modal-rank-val">
+            <div style="font-size: 1rem; color: var(--gold); font-family: 'Orbitron'; margin-bottom: 15px;" id="modal-rank-val">
                 Rang Civile
             </div>
-            <p style="color: #c0e0f0; margin-bottom: 25px;">Vos attributs physiques continuent d'évoluer !</p>
+            <p style="color: #c0e0f0; margin-bottom: 20px; font-size: 0.9rem;">Vos attributs physiques continuent d'évoluer !</p>
             <button class="btn-action" onclick="closeLevelUpModal()">CONTINUER</button>
         </div>
     </div>
@@ -900,17 +1004,19 @@
         // AUDIO SYNTHESIZER
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(f1, f2, d) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(f1, audioCtx.currentTime);
-            if (f2) osc.frequency.exponentialRampToValueAtTime(f2, audioCtx.currentTime + d);
-            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + d);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + d);
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f1, audioCtx.currentTime);
+                if (f2) osc.frequency.exponentialRampToValueAtTime(f2, audioCtx.currentTime + d);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + d);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + d);
+            } catch(e) {}
         }
 
         function initDailyConfig() {
@@ -928,7 +1034,7 @@
                 workoutBox.style.display = 'none';
                 state.workoutDone = true;
             } else {
-                workoutBox.style.display = 'grid';
+                workoutBox.style.display = 'flex';
                 document.getElementById('workout-goal-label').innerText = `Séance : ${programName}`;
             }
 
@@ -971,7 +1077,7 @@
             document.getElementById('creatine-status').style.color = state.creatineDone ? "var(--success-green)" : "var(--neon-cyan)";
             document.getElementById('chk-creatine').checked = state.creatineDone;
 
-            document.getElementById('steps-count').innerText = `${state.steps.toLocaleString()} / 10 000`;
+            document.getElementById('steps-count').innerText = `${state.steps.toLocaleString()} / 10k`;
             document.getElementById('steps-count').style.color = state.steps >= 10000 ? "var(--success-green)" : "var(--neon-cyan)";
 
             document.getElementById('workout-status').innerText = state.workoutDone ? "Complétée" : "À effectuer";
@@ -1024,7 +1130,7 @@
 
         // ANATOMY TOGGLES
         function toggleMuscle(group) {
-            audioCtx.resume();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(600, 800, 0.05);
             state.musclesWorked[group] = !state.musclesWorked[group];
             
@@ -1063,14 +1169,14 @@
 
         // QUEST ACTIONS
         function toggleCreatine() {
-            audioCtx.resume();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(600, 800, 0.05);
             state.creatineDone = document.getElementById('chk-creatine').checked;
             updateUI();
         }
 
         function toggleWorkout() {
-            audioCtx.resume();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(600, 800, 0.05);
             const wasDone = state.workoutDone;
             state.workoutDone = document.getElementById('chk-workout').checked;
@@ -1086,7 +1192,7 @@
         }
 
         function addSteps(amount) {
-            audioCtx.resume();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(700, 900, 0.05);
             const prevSteps = state.steps;
             state.steps = Math.max(0, Math.min(10000, state.steps + amount));
@@ -1103,7 +1209,7 @@
             const input = document.getElementById('input-custom-steps');
             const val = parseInt(input.value);
             if (!isNaN(val) && val >= 0) {
-                audioCtx.resume();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
                 playSound(700, 900, 0.05);
                 const prevSteps = state.steps;
                 state.steps = Math.min(10000, val);
@@ -1134,7 +1240,7 @@
         // WEIGHT & GOALS ACTIONS
         function recordWeight(e) {
             e.preventDefault();
-            audioCtx.resume();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(600, 1000, 0.1);
 
             const weightVal = parseFloat(document.getElementById('input-weight').value);
@@ -1161,7 +1267,7 @@
 
         function setGoals(e) {
             e.preventDefault();
-            audioCtx.resume();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(700, 900, 0.05);
 
             const w = parseFloat(document.getElementById('target-weight-input').value);
@@ -1170,7 +1276,6 @@
             if (!isNaN(w)) state.targetWeight = w;
             if (!isNaN(bf)) state.targetBodyFat = bf;
 
-            // Reset combined flag to allow re-triggering reward if new goals are set
             state.bothTargetsReached = false;
 
             logMessage(`Objectifs mis à jour : ${state.targetWeight} kg / ${state.targetBodyFat}% MG.`);
@@ -1188,11 +1293,11 @@
                 <div style="background: rgba(0,30,60,0.4); border-left: 3px solid var(--neon-cyan); padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <span style="font-size: 0.75rem; color: #a0c0d0;">${item.date}</span><br>
-                        <strong style="color: #fff; font-family: 'Orbitron'; font-size: 0.9rem;">${item.weight} kg</strong> (${item.bodyFat}% MG)
+                        <strong style="color: #fff; font-family: 'Orbitron'; font-size: 0.85rem;">${item.weight} kg</strong> (${item.bodyFat}% MG)
                     </div>
                     <div style="text-align: right;">
                         <span style="font-size: 0.75rem; color: var(--gold);">Maigre</span><br>
-                        <strong style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 0.9rem;">${item.leanMass} kg</strong>
+                        <strong style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 0.85rem;">${item.leanMass} kg</strong>
                     </div>
                 </div>
             `).join('');
@@ -1224,7 +1329,7 @@
         }
 
         function switchTab(tabId) {
-            audioCtx.resume();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(700, 500, 0.05);
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
