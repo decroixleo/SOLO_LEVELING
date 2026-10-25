@@ -125,21 +125,20 @@
 
         .auth-tab-btn {
             flex: 1;
-            padding: 10px;
-            background: none;
-            border: none;
+            padding: 12px 10px;
             color: #72a8c8;
             font-family: 'Orbitron', sans-serif;
             cursor: pointer;
             font-size: 0.85rem;
             transition: all 0.2s;
+            display: block;
         }
 
         .auth-tab-btn.active {
             color: var(--neon-blue);
             border-bottom: 2px solid var(--neon-blue);
             font-weight: bold;
-            background: rgba(0, 240, 255, 0.1);
+            background: rgba(0, 240, 255, 0.15);
         }
 
         /* HEADER */
@@ -622,8 +621,8 @@
             <div class="auth-title"><i class="fa-solid fa-shield-halved"></i> IDENTIFICATION DU JOUEUR</div>
             
             <div class="auth-tabs">
-                <button type="button" class="auth-tab-btn active" id="tab-btn-login" onclick="switchAuthTab(event, 'login')">CONNEXION</button>
-                <button type="button" class="auth-tab-btn" id="tab-btn-signup" onclick="switchAuthTab(event, 'signup')">INSCRIPTION</button>
+                <span class="auth-tab-btn active" id="tab-btn-login">CONNEXION</span>
+                <span class="auth-tab-btn" id="tab-btn-signup">INSCRIPTION</span>
             </div>
 
             <form id="auth-form" onsubmit="handleAuth(event)">
@@ -1056,12 +1055,8 @@
             }
         };
 
-        // AUTHENTICATION LOGIC
-        function switchAuthTab(event, mode) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
+        // AUTHENTICATION LOGIC CORRIGÉE
+        function setAuthMode(mode) {
             authMode = mode;
             const tabLogin = document.getElementById('tab-btn-login');
             const tabSignup = document.getElementById('tab-btn-signup');
@@ -1498,6 +1493,10 @@
 
         window.onload = async () => {
             initDailyConfig();
+
+            // Attacher explicitement les événements de clic sur les onglets de connexion
+            document.getElementById('tab-btn-login').addEventListener('click', () => setAuthMode('login'));
+            document.getElementById('tab-btn-signup').addEventListener('click', () => setAuthMode('signup'));
             
             const { data } = await supabase.auth.getSession();
             if (data.session) {
