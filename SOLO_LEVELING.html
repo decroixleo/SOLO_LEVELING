@@ -786,7 +786,7 @@
                         <div class="goal-item" id="workout-goal-container">
                             <div class="goal-name">
                                 <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
-                                <span id="workout-goal-label">Séance : Repos</span>
+                                <span id="workout-goal-label">Séance : Repos / Libre</span>
                             </div>
                             <div class="goal-progress" id="workout-status">À effectuer</div>
                             <div style="align-self: flex-end;">
@@ -886,7 +886,7 @@
                                     <path id="svg-legs-fl" class="m-group" d="M34 118 C35 135 34 156 34 166 C39 167 45 166 46 153 C47 140 47 126 46 118 Z"/>
                                     <path id="svg-legs-fr" class="m-group" d="M66 118 C65 135 66 156 66 166 C61 167 55 166 54 153 C53 140 53 126 54 118 Z"/>
                                     <path id="svg-calves-fl" class="m-group" d="M35 170 C33 180 34 196 36 204 C39 204 41 198 42 188 C43 178 41 171 39 170 Z"/>
-                                    <path id="svg-calves-fr" class="m-group" d="M65 170 C67 180 66 196 64 204 C61 204 58 198 58 188 C57 178 59 171 61 170 Z"/>
+                                    <path id="svg-calves-fr" class="m-group" d="M65 170 C67 180 66 196 64 204 C61 204 59 198 58 188 C57 178 59 171 61 170 Z"/>
                                 </svg>
                             </div>
 
@@ -1054,7 +1054,6 @@
             const oneJan = new Date(year, 0, 1);
             const weekNum = Math.ceil((((today - oneJan) / 86400000) + oneJan.getDay() + 1) / 7);
 
-            // Réinitialisation automatique le dimanche
             if (today.getDay() === 0 && state.lastResetWeek !== weekNum) {
                 state.musclesWorked = { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false };
                 state.workoutDone = false;
@@ -1087,6 +1086,7 @@
                     { id: 3, name: "Jambes / Abdominaux", days: [3], muscles: ["legs", "abs"] }
                 ]
             };
+            initDailyConfig();
             updateUI();
         }
 
@@ -1358,7 +1358,6 @@
             if (!state.routines) state.routines = [];
 
             if (editId) {
-                // Modification d'une séance existante
                 const routine = state.routines.find(r => r.id == editId);
                 if (routine) {
                     routine.name = name;
@@ -1367,7 +1366,6 @@
                     logMessage(`Séance "${name}" mise à jour.`);
                 }
             } else {
-                // Création d'une nouvelle séance
                 const newRoutine = {
                     id: Date.now(),
                     name: name,
@@ -1395,7 +1393,7 @@
             document.getElementById('btn-cancel-edit').style.display = "inline-block";
 
             document.querySelectorAll('.chk-d').forEach(cb => {
-                cb.checked = routine.days && routine.days.includes(parseInt(cb.value));
+                cb.checked = routine.days && routine.days.map(Number).includes(parseInt(cb.value));
             });
 
             document.querySelectorAll('.chk-m').forEach(cb => {
