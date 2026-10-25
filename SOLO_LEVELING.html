@@ -622,8 +622,8 @@
             <div class="auth-title"><i class="fa-solid fa-shield-halved"></i> IDENTIFICATION DU JOUEUR</div>
             
             <div class="auth-tabs">
-                <button type="button" class="auth-tab-btn active" id="tab-btn-login" onclick="switchAuthTab('login')">CONNEXION</button>
-                <button type="button" class="auth-tab-btn" id="tab-btn-signup" onclick="switchAuthTab('signup')">INSCRIPTION</button>
+                <button type="button" class="auth-tab-btn active" id="tab-btn-login" onclick="switchAuthTab(event, 'login')">CONNEXION</button>
+                <button type="button" class="auth-tab-btn" id="tab-btn-signup" onclick="switchAuthTab(event, 'signup')">INSCRIPTION</button>
             </div>
 
             <form id="auth-form" onsubmit="handleAuth(event)">
@@ -1056,8 +1056,12 @@
             }
         };
 
-        // AUTHENTICATION LOGIC CORRIGÉE
-        function switchAuthTab(mode) {
+        // AUTHENTICATION LOGIC
+        function switchAuthTab(event, mode) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             authMode = mode;
             const tabLogin = document.getElementById('tab-btn-login');
             const tabSignup = document.getElementById('tab-btn-signup');
@@ -1086,23 +1090,30 @@
             submitBtn.disabled = true;
             submitBtn.innerText = "CHARGEMENT...";
 
-            let result;
-            if (authMode === 'login') {
-                result = await supabase.auth.signInWithPassword({ email, password });
-            } else {
-                result = await supabase.auth.signUp({ email, password });
-            }
+            try {
+                let result;
+                if (authMode === 'login') {
+                    result = await supabase.auth.signInWithPassword({ email, password });
+                } else {
+                    result = await supabase.auth.signUp({ email, password });
+                }
 
-            submitBtn.disabled = false;
-            submitBtn.innerText = authMode === 'login' ? 'SE CONNECTER' : "S'INSCRIRE";
+                submitBtn.disabled = false;
+                submitBtn.innerText = authMode === 'login' ? 'SE CONNECTER' : "S'INSCRIRE";
 
-            if (result.error) {
-                errDiv.innerText = result.error.message;
+                if (result.error) {
+                    errDiv.innerText = result.error.message;
+                    errDiv.style.display = 'block';
+                } else if (result.data.user) {
+                    currentUser = result.data.user;
+                    document.getElementById('auth-screen').style.display = 'none';
+                    await loadUserData();
+                }
+            } catch (err) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = authMode === 'login' ? 'SE CONNECTER' : "S'INSCRIRE";
+                errDiv.innerText = err.message;
                 errDiv.style.display = 'block';
-            } else if (result.data.user) {
-                currentUser = result.data.user;
-                document.getElementById('auth-screen').style.display = 'none';
-                await loadUserData();
             }
         }
 
