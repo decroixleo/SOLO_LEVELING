@@ -111,7 +111,7 @@
         .auth-title {
             font-family: 'Orbitron', sans-serif;
             color: var(--neon-blue);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             margin-bottom: 20px;
             letter-spacing: 2px;
             text-shadow: var(--text-glow);
@@ -125,19 +125,21 @@
 
         .auth-tab-btn {
             flex: 1;
-            padding: 8px;
+            padding: 10px;
             background: none;
             border: none;
             color: #72a8c8;
             font-family: 'Orbitron', sans-serif;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            transition: all 0.2s;
         }
 
         .auth-tab-btn.active {
             color: var(--neon-blue);
             border-bottom: 2px solid var(--neon-blue);
             font-weight: bold;
+            background: rgba(0, 240, 255, 0.1);
         }
 
         /* HEADER */
@@ -399,7 +401,7 @@
         }
 
         /* FORM CONTROLS */
-        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; text-align: left; }
         .form-group label { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--neon-cyan); }
         .form-control {
             background: rgba(0, 25, 50, 0.7);
@@ -620,8 +622,8 @@
             <div class="auth-title"><i class="fa-solid fa-shield-halved"></i> IDENTIFICATION DU JOUEUR</div>
             
             <div class="auth-tabs">
-                <button class="auth-tab-btn active" id="tab-btn-login" onclick="switchAuthTab('login')">CONNEXION</button>
-                <button class="auth-tab-btn" id="tab-btn-signup" onclick="switchAuthTab('signup')">INSCRIPTION</button>
+                <button type="button" class="auth-tab-btn active" id="tab-btn-login" onclick="switchAuthTab('login')">CONNEXION</button>
+                <button type="button" class="auth-tab-btn" id="tab-btn-signup" onclick="switchAuthTab('signup')">INSCRIPTION</button>
             </div>
 
             <form id="auth-form" onsubmit="handleAuth(event)">
@@ -630,7 +632,7 @@
                     <input type="email" class="form-control" id="auth-email" required placeholder="joueur@domaine.com">
                 </div>
                 <div class="form-group">
-                    <label>MOT DE PASSE</label>
+                    <label>MOT DE PASSE (6+ car.)</label>
                     <input type="password" class="form-control" id="auth-password" required placeholder="••••••••">
                 </div>
                 <div id="auth-error" style="color: var(--danger-red); font-size: 0.8rem; margin-bottom: 10px; display: none;"></div>
@@ -1054,12 +1056,22 @@
             }
         };
 
-        // AUTHENTICATION LOGIC
+        // AUTHENTICATION LOGIC CORRIGÉE
         function switchAuthTab(mode) {
             authMode = mode;
-            document.getElementById('tab-btn-login').classList.toggle('active', mode === 'login');
-            document.getElementById('tab-btn-signup').classList.toggle('active', mode === 'signup');
-            document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'SE CONNECTER' : "S'INSCRIRE";
+            const tabLogin = document.getElementById('tab-btn-login');
+            const tabSignup = document.getElementById('tab-btn-signup');
+            const submitBtn = document.getElementById('auth-submit-btn');
+
+            if (mode === 'login') {
+                tabLogin.classList.add('active');
+                tabSignup.classList.remove('active');
+                submitBtn.innerText = 'SE CONNECTER';
+            } else {
+                tabSignup.classList.add('active');
+                tabLogin.classList.remove('active');
+                submitBtn.innerText = "S'INSCRIRE";
+            }
             document.getElementById('auth-error').style.display = 'none';
         }
 
@@ -1068,7 +1080,11 @@
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
             const errDiv = document.getElementById('auth-error');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            
             errDiv.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.innerText = "CHARGEMENT...";
 
             let result;
             if (authMode === 'login') {
@@ -1076,6 +1092,9 @@
             } else {
                 result = await supabase.auth.signUp({ email, password });
             }
+
+            submitBtn.disabled = false;
+            submitBtn.innerText = authMode === 'login' ? 'SE CONNECTER' : "S'INSCRIRE";
 
             if (result.error) {
                 errDiv.innerText = result.error.message;
@@ -1469,7 +1488,6 @@
         window.onload = async () => {
             initDailyConfig();
             
-            // Auto check session
             const { data } = await supabase.auth.getSession();
             if (data.session) {
                 currentUser = data.session.user;
