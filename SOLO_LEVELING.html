@@ -642,7 +642,7 @@
     <div class="system-glow"></div>
 
     <div class="system-container">
-        <header>
+        header>
             <div class="title-group">
                 <i class="fa-solid fa-bolt system-icon"></i>
                 <h1>Système // Programme Entraînement</h1>
@@ -827,7 +827,7 @@
                                     <input type="text" id="routine-name-input" class="form-control" placeholder="ex: Dos / Biceps" required>
                                 </div>
                                 
-                                <label style="font-family:'Orbitron'; font-size:0.75rem; color: var(--gold); display:block; margin-bottom:6px;">Jours de la Quête Quotidienne :</label>
+                                <label style="font-family:'Orbitron'; font-size:0.75rem; color: var(--gold); display:block; margin-bottom:6px;">Jours d'Apparition :</label>
                                 <div class="days-checklist">
                                     <label class="day-check-item"><input type="checkbox" value="1" class="chk-d"> Lundi</label>
                                     <label class="day-check-item"><input type="checkbox" value="2" class="chk-d"> Mardi</label>
@@ -1227,7 +1227,7 @@
         function getTodayRoutine() {
             const today = new Date().getDay();
             if (!state.routines) return null;
-            return state.routines.find(r => r.days && r.days.includes(today)) || null;
+            return state.routines.find(r => r.days && r.days.map(Number).includes(today)) || null;
         }
 
         function initDailyConfig() {
@@ -1418,7 +1418,7 @@
             };
 
             for (const [key, ids] of Object.entries(svgMap)) {
-                const isActive = state.musclesWorked[key];
+                const isActive = state.musclesWorked && state.musclesWorked[key];
                 ids.forEach(id => {
                     const el = document.getElementById(id);
                     if (el) {
@@ -1456,12 +1456,12 @@
             if (!wasDone && state.workoutDone) {
                 state.stats.strength += 1;
                 
-                // Allumer les muscles ciblés par la séance du jour s'il y en a une
                 if (todayRoutine && todayRoutine.muscles) {
+                    if (!state.musclesWorked) state.musclesWorked = {};
                     todayRoutine.muscles.forEach(m => {
                         state.musclesWorked[m] = true;
                     });
-                    logMessage(`Séance "${todayRoutine.name}" validée ! Muscles illuminés sur le schéma corporel.`);
+                    logMessage(`Séance "${todayRoutine.name}" validée ! Muscles illuminés sur le schéma.`);
                 } else {
                     logMessage("Séance du jour validée ! +1 Point de Force.");
                 }
