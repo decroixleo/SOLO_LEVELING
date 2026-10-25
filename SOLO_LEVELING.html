@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Système - Solo Leveling Musculation</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-cyan: #00d2ff;
+            --hevy-blue: #0095ff;
+            --dark-blue: #020b18;
+            --panel-bg: rgba(4, 18, 38, 0.88);
+            --panel-border: #00a8ff;
+            --accent-glow: rgba(0, 240, 255, 0.4);
+            --gold: #ffd700;
+            --text-glow: 0 0 8px rgba(0, 240, 255, 0.6);
+            --danger-red: #ff3366;
+            --success-green: #10b981;
+            --muscle-base: #a0acba;
+            --muscle-shadow: #4b5866;
+            --muscle-body-bg: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: #01060e;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 80, 160, 0.15) 0%, transparent 80%),
+                linear-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 210, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            color: #d1f4ff;
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Scanlines Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 99;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .system-glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85vw; height: 85vh;
+            background: radial-gradient(ellipse at center, rgba(0, 150, 255, 0.1) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .system-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 12px 25px;
+            box-shadow: 0 0 15px var(--accent-glow);
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+            backdrop-filter: blur(8px);
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .system-icon {
+            font-size: 1.8rem;
+            color: var(--neon-blue);
+            text-shadow: var(--text-glow);
+            animation: pulse 2s infinite alternate;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: var(--text-glow);
+        }
+
+        nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: rgba(0, 40, 80, 0.5);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            color: #8be3ff;
+            padding: 8px 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 210, 255, 0.2);
+            border-color: var(--neon-blue);
+            color: #fff;
+        }
+
+        .nav-btn.active {
+            background: var(--neon-blue);
+            color: var(--dark-blue);
+            border-color: #fff;
+            box-shadow: 0 0 15px var(--neon-blue);
+            font-weight: 800;
+        }
+
+        /* MAIN FRAME */
+        .system-frame {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            min-height: 520px;
+            padding: 25px;
+            box-shadow: 0 0 25px rgba(0, 150, 255, 0.25);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: var(--neon-cyan);
+            border-bottom: 1px solid rgba(0, 210, 255, 0.3);
+            padding-bottom: 6px;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+        }
+
+        .label { color: #72a8c8; font-weight: 600; }
+        .val { font-family: 'Orbitron', sans-serif; font-weight: 700; color: #fff; }
+
+        /* BARS */
+        .bar-container { margin-top: 15px; }
+        .bar-info { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; font-family: 'Orbitron'; }
+        .bar-outer {
+            width: 100%; height: 16px;
+            background: rgba(0, 20, 40, 0.8);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            padding: 1px;
+        }
+        .bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, #7209b7, #00f0ff);
+            box-shadow: 0 0 10px var(--neon-blue);
+            transition: width 0.4s ease;
+        }
+
+        /* QUEST STYLES */
+        .quest-box {
+            border: 1px solid var(--neon-cyan);
+            background: rgba(0, 15, 30, 0.6);
+            padding: 20px;
+        }
+
+        .quest-goals {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .goal-item {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr auto;
+            align-items: center;
+            background: rgba(0, 30, 60, 0.4);
+            padding: 12px 15px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            gap: 10px;
+        }
+
+        .goal-name { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .goal-progress { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--neon-cyan); }
+
+        .btn-quest-action {
+            background: rgba(0, 210, 255, 0.2);
+            border: 1px solid var(--neon-cyan);
+            color: #fff;
+            padding: 6px 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-quest-action:hover {
+            background: var(--neon-cyan);
+            color: #000;
+        }
+
+        /* CHECKBOX */
+        .custom-checkbox {
+            width: 22px; height: 22px;
+            accent-color: var(--neon-blue);
+            cursor: pointer;
+        }
+
+        /* FORM CONTROLS */
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+        .form-group label { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--neon-cyan); }
+        .form-control {
+            background: rgba(0, 25, 50, 0.7);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            color: #fff;
+            padding: 10px 15px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            outline: none;
+        }
+        .form-control:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px var(--accent-glow); }
+
+        /* WARNING BANNER */
+        .warning-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 51, 102, 0.15);
+            border: 1px solid var(--danger-red);
+            padding: 12px 18px;
+            color: #ff99b3;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .warning-banner.alert {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* HEVY STYLE ANATOMY DIAGRAM STYLES */
+        .hevy-anatomy-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            background: #000000;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-radius: 8px;
+            padding: 20px 10px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 210, 255, 0.15);
+        }
+
+        .hevy-body-svg {
+            width: 170px;
+            height: 380px;
+        }
+
+        .m-head, .m-base {
+            fill: var(--muscle-body-bg);
+            stroke: #2d3748;
+            stroke-width: 0.5;
+        }
+
+        .m-group {
+            fill: var(--muscle-base);
+            stroke: #1a202c;
+            stroke-width: 0.6;
+            transition: all 0.35s ease;
+            cursor: pointer;
+        }
+
+        .m-group:hover {
+            fill: #70b8ff;
+        }
+
+        /* HEVY NEON BLUE HIGHLIGHT FOR ACTIVE MUSCLES */
+        .m-group.active {
+            fill: #0088ff !important;
+            stroke: #00f0ff !important;
+            stroke-width: 1;
+            filter: drop-shadow(0 0 6px #0095ff) drop-shadow(0 0 12px #00f0ff);
+        }
+
+        .muscle-toggle-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-muscle {
+            background: rgba(0, 30, 60, 0.6);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            color: #8be3ff;
+            padding: 8px 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-muscle.active {
+            background: rgba(0, 240, 255, 0.25);
+            border-color: var(--neon-blue);
+            color: #fff;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* FOOTER & LOG */
+        footer {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 15px var(--accent-glow);
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+        }
+
+        .system-log { color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: 0.85rem; }
+
+        .btn-action {
+            background: linear-gradient(180deg, rgba(0,210,255,0.3) 0%, rgba(0,120,215,0.5) 100%);
+            border: 1px solid var(--neon-blue);
+            color: #fff;
+            padding: 10px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background: var(--neon-blue);
+            color: var(--dark-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .btn-action:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: #666;
+        }
+
+        /* LEVEL UP MODAL */
+        .level-up-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 11, 24, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .level-up-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .level-up-box {
+            border: 2px solid var(--neon-blue);
+            background: rgba(4, 25, 50, 0.95);
+            padding: 40px 60px;
+            text-align: center;
+            box-shadow: 0 0 50px var(--neon-blue);
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+        }
+
+        @keyframes pulse { 0% { opacity: 0.7; } 100% { opacity: 1; text-shadow: 0 0 15px var(--neon-blue); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="system-glow"></div>
+
+    <div class="system-container">
+        <!-- HEADER -->
+        <header>
+            <div class="title-group">
+                <i class="fa-solid fa-bolt system-icon"></i>
+                <h1>Système // Programme Entraînement</h1>
+            </div>
+            <nav>
+                <button class="nav-btn active" onclick="switchTab('status')">
+                    <i class="fa-solid fa-user"></i> Statut
+                </button>
+                <button class="nav-btn" onclick="switchTab('quest')">
+                    <i class="fa-solid fa-scroll"></i> Quête Quotidienne
+                </button>
+                <button class="nav-btn" onclick="switchTab('workout')">
+                    <i class="fa-solid fa-child-reaching"></i> Séance & Anatomie
+                </button>
+                <button class="nav-btn" onclick="switchTab('weighin')">
+                    <i class="fa-solid fa-weight-scale"></i> Pesée & Objectifs
+                </button>
+            </nav>
+        </header>
+
+        <!-- MAIN FRAME -->
+        <main class="system-frame">
+
+            <!-- TAB 1: STATUS -->
+            <div id="tab-status" class="tab-content active">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                    <!-- Left: Profile -->
+                    <div>
+                        <div class="section-header">
+                            <span>Informations du Joueur</span>
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Niveau :</span>
+                            <span class="val" id="player-level" style="font-size: 1.6rem; color: var(--neon-blue);">1</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Rang Officiel :</span>
+                            <span class="val" id="player-rank" style="color: var(--gold); font-size: 1.2rem;">Rang Civile</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Dernier Poids Enregistré :</span>
+                            <span class="val" id="display-last-weight">-- kg</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Masse Maigre Estimée :</span>
+                            <span class="val" id="display-lean-mass">-- kg</span>
+                        </div>
+
+                        <!-- EXP BAR -->
+                        <div class="bar-container">
+                            <div class="bar-info">
+                                <span style="color: var(--neon-cyan);">Progression EXP</span>
+                                <span id="exp-text">0 / 100 EXP</span>
+                            </div>
+                            <div class="bar-outer">
+                                <div class="bar-inner" id="exp-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- TEST BUTTON -->
+                        <button class="btn-action" style="margin-top: 15px; width: 100%;" onclick="addExp(50)">
+                            +50 EXP (Test rapide)
+                        </button>
+                    </div>
+
+                    <!-- Right: Real-Data Stats starting at 0 -->
+                    <div>
+                        <div class="section-header">
+                            <span>Attributs Physiques Réels</span>
+                            <i class="fa-solid fa-dumbbell"></i>
+                        </div>
+                        <p style="font-size: 0.85rem; color: #72a8c8; margin-bottom: 12px;">
+                            * Les statistiques démarrent à 0 et augmentent selon vos séances, vos pas, vos pesées et vos quêtes.
+                        </p>
+                        <div class="info-row">
+                            <span class="label" title="Basé sur les séances accomplies"><i class="fa-solid fa-dumbbell"></i> Force (Séances)</span>
+                            <span class="val" id="stat-str">0</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label" title="Basé sur la validation des 10 000 pas"><i class="fa-solid fa-heart-pulse"></i> Endurance (10k Pas)</span>
+                            <span class="val" id="stat-end">0</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label" title="Basé sur votre masse maigre (Poids x %MG)"><i class="fa-solid fa-child"></i> Masse Musculaire</span>
+                            <span class="val" id="stat-mass">0</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label" title="Basé sur les quêtes quotidiennes réussies"><i class="fa-solid fa-fire"></i> Volonté (Quêtes)</span>
+                            <span class="val" id="stat-will">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: DAILY QUEST -->
+            <div id="tab-quest" class="tab-content">
+                <div class="quest-box">
+                    <div style="text-align: center; border-bottom: 2px double var(--neon-cyan); padding-bottom: 12px; margin-bottom: 20px;">
+                        <div style="font-family: 'Orbitron'; color: var(--neon-blue); font-size: 1.4rem; letter-spacing: 2px;">
+                            <i class="fa-solid fa-exclamation-triangle"></i> QUÊTE QUOTIDIENNE
+                        </div>
+                        <div style="font-size: 0.95rem; color: #a0c0d0; margin-top: 4px;">
+                            Aujourd'hui : <strong id="today-name" style="color: var(--gold);">Lundi</strong> — Programme : <span id="today-program-title" style="color: #fff;">Pec, Triceps, Épaules</span>
+                        </div>
+                    </div>
+
+                    <div class="quest-goals">
+                        <!-- Goal 1: Creatine -->
+                        <div class="goal-item">
+                            <span class="goal-name">
+                                <i class="fa-solid fa-prescription-bottle-medical" style="color: var(--neon-blue);"></i>
+                                Créatine (6g)
+                            </span>
+                            <span class="goal-progress" id="creatine-status">Non pris</span>
+                            <div>
+                                <input type="checkbox" class="custom-checkbox" id="chk-creatine" onchange="toggleCreatine()">
+                            </div>
+                        </div>
+
+                        <!-- Goal 2: Steps -->
+                        <div class="goal-item" style="grid-template-columns: 1.5fr 1fr auto;">
+                            <span class="goal-name">
+                                <i class="fa-solid fa-shoe-prints" style="color: var(--success-green);"></i>
+                                Marche (10 000 pas)
+                            </span>
+                            <span class="goal-progress" id="steps-count">0 / 10 000</span>
+                            <div style="display: flex; flex-direction: column; gap: 5px; align-items: flex-end;">
+                                <div style="display: flex; gap: 4px;">
+                                    <button class="btn-quest-action" onclick="addSteps(-5000)">-5k</button>
+                                    <button class="btn-quest-action" onclick="addSteps(-1000)">-1k</button>
+                                    <button class="btn-quest-action" onclick="addSteps(1000)">+1k</button>
+                                    <button class="btn-quest-action" onclick="addSteps(5000)">+5k</button>
+                                </div>
+                                <div style="display: flex; gap: 5px; align-items: center; margin-top: 2px;">
+                                    <input type="number" id="input-custom-steps" placeholder="Saisie ex: 8500" style="width: 100px; padding: 2px 5px; background: rgba(0,20,40,0.8); border: 1px solid var(--neon-cyan); color: #fff; font-family: 'Orbitron'; font-size: 0.75rem;">
+                                    <button class="btn-quest-action" onclick="setCustomSteps()">OK</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Goal 3: Daily Workout Session (Hidden on Weekends) -->
+                        <div class="goal-item" id="workout-goal-container">
+                            <span class="goal-name">
+                                <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
+                                <span id="workout-goal-label">Séance du jour</span>
+                            </span>
+                            <span class="goal-progress" id="workout-status">À effectuer</span>
+                            <div>
+                                <input type="checkbox" class="custom-checkbox" id="chk-workout" onchange="toggleWorkout()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid rgba(0, 210, 255, 0.3); padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span style="color: #a0c0d0; font-size: 0.9rem;">Récompenses de Quête :</span>
+                            <div style="color: var(--gold); font-family: 'Orbitron'; font-size: 1.1rem; margin-top: 3px;">
+                                +150 EXP • +1 Point de Volonté
+                            </div>
+                        </div>
+                        <button class="btn-action" id="btn-claim-quest" disabled onclick="claimDailyQuest()">
+                            Réclamer les Récompenses
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: WORKOUT & HEVY ANATOMY MAP -->
+            <div id="tab-workout" class="tab-content">
+                <div class="section-header">
+                    <span>Programme de la Semaine & Carte Musculaire</span>
+                    <i class="fa-solid fa-child-reaching"></i>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px;">
+                    <!-- Left: Weekly Schedule & Manual Toggles -->
+                    <div>
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 15px; margin-bottom: 15px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.95rem; color: var(--gold); margin-bottom: 10px;">Planning Hebdomadaire</h3>
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 0.95rem;">
+                                <li><strong style="color:var(--neon-cyan);">Lundi & Jeudi :</strong> Pecs, Triceps, Épaules</li>
+                                <li><strong style="color:var(--neon-cyan);">Mardi & Vendredi :</strong> Dos & Biceps</li>
+                                <li><strong style="color:var(--neon-cyan);">Mercredi :</strong> Jambes & Abdominaux</li>
+                                <li><strong style="color:var(--neon-cyan);">Samedi & Dimanche :</strong> Repos / Récupération</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 15px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.95rem; color: #fff; margin-bottom: 8px;">Muscles Travaillés cette Semaine</h3>
+                            <p style="font-size: 0.8rem; color: #72a8c8; margin-bottom: 10px;">Les muscles illuminés en bleu néon style Hevy ont été entraînés.</p>
+                            
+                            <div class="muscle-toggle-grid">
+                                <button class="btn-muscle" id="btn-m-pecs" onclick="toggleMuscle('pecs')">Pectoraux <i class="fa-solid fa-check"></i></button>
+                                <button class="btn-muscle" id="btn-m-back" onclick="toggleMuscle('back')">Dos <i class="fa-solid fa-check"></i></button>
+                                <button class="btn-muscle" id="btn-m-shoulders" onclick="toggleMuscle('shoulders')">Épaules <i class="fa-solid fa-check"></i></button>
+                                <button class="btn-muscle" id="btn-m-biceps" onclick="toggleMuscle('biceps')">Biceps <i class="fa-solid fa-check"></i></button>
+                                <button class="btn-muscle" id="btn-m-triceps" onclick="toggleMuscle('triceps')">Triceps <i class="fa-solid fa-check"></i></button>
+                                <button class="btn-muscle" id="btn-m-abs" onclick="toggleMuscle('abs')">Abdominaux <i class="fa-solid fa-check"></i></button>
+                                <button class="btn-muscle" id="btn-m-legs" onclick="toggleMuscle('legs')">Jambes/Quads <i class="fa-solid fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: HEVY 3D VECTOR MUSCLE MAP -->
+                    <div class="hevy-anatomy-container">
+                        <!-- FRONT VIEW -->
+                        <div style="text-align: center;">
+                            <div style="font-family:'Orbitron'; font-size: 0.8rem; color: #8be3ff; margin-bottom: 6px; letter-spacing: 1px;">FACE</div>
+                            <svg class="hevy-body-svg" viewBox="0 0 100 220">
+                                <!-- Base Body / Head / Joints -->
+                                <circle class="m-head" cx="50" cy="18" r="9"/>
+                                <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
+
+                                <!-- Pecs -->
+                                <path id="svg-pecs-l" class="m-group" d="M36 43 C42 43 49 45 49 57 C41 58 35 55 33 50 C33 46 34 43 36 43 Z"/>
+                                <path id="svg-pecs-r" class="m-group" d="M64 43 C58 43 51 45 51 57 C59 58 65 55 67 50 C67 46 66 43 64 43 Z"/>
+
+                                <!-- Shoulders Front -->
+                                <path id="svg-shoulders-fl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
+                                <path id="svg-shoulders-fr" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
+
+                                <!-- Biceps -->
+                                <path id="svg-biceps-l" class="m-group" d="M26 60 C23 66 22 74 22 81 C25 82 28 80 29 74 C30 68 29 61 28 60 Z"/>
+                                <path id="svg-biceps-r" class="m-group" d="M74 60 C77 66 78 74 78 81 C75 82 72 80 71 74 C70 68 71 61 72 60 Z"/>
+
+                                <!-- Forearms Front -->
+                                <path id="svg-forearms-fl" class="m-group" d="M22 84 C20 90 19 98 21 106 C24 106 26 102 27 96 C28 90 27 85 25 84 Z"/>
+                                <path id="svg-forearms-fr" class="m-group" d="M78 84 C80 90 81 98 79 106 C76 106 74 102 73 96 C72 90 73 85 75 84 Z"/>
+
+                                <!-- Abs / Core -->
+                                <path id="svg-abs" class="m-group" d="M41 60 L49 60 L49 69 L41 69 Z M51 60 L59 60 L59 69 L51 69 Z M41 71 L49 71 L49 80 L41 80 Z M51 71 L59 71 L59 80 L51 80 Z M42 82 L49 82 L49 92 L43 92 Z M51 82 L58 82 L57 92 L51 92 Z M34 60 C38 68 38 80 39 90 L32 78 Z M66 60 C62 68 62 80 61 90 L68 78 Z"/>
+
+                                <!-- Quadriceps / Legs Front -->
+                                <path id="svg-legs-fl" class="m-group" d="M34 118 C35 135 34 156 34 166 C39 167 45 166 46 153 C47 140 47 126 46 118 Z"/>
+                                <path id="svg-legs-fr" class="m-group" d="M66 118 C65 135 66 156 66 166 C61 167 55 166 54 153 C53 140 53 126 54 118 Z"/>
+
+                                <!-- Calves Front -->
+                                <path id="svg-calves-fl" class="m-group" d="M35 170 C33 180 34 196 36 204 C39 204 41 198 42 188 C43 178 41 171 39 170 Z"/>
+                                <path id="svg-calves-fr" class="m-group" d="M65 170 C67 180 66 196 64 204 C61 204 59 198 58 188 C57 178 59 171 61 170 Z"/>
+                            </svg>
+                        </div>
+
+                        <!-- BACK VIEW -->
+                        <div style="text-align: center;">
+                            <div style="font-family:'Orbitron'; font-size: 0.8rem; color: #8be3ff; margin-bottom: 6px; letter-spacing: 1px;">DOS</div>
+                            <svg class="hevy-body-svg" viewBox="0 0 100 220">
+                                <!-- Base Body / Head -->
+                                <circle class="m-head" cx="50" cy="18" r="9"/>
+                                <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
+
+                                <!-- Traps & Lats / Back -->
+                                <path id="svg-back" class="m-group" d="M41 36 L50 44 L59 36 L66 52 L60 82 L50 92 L40 82 L34 52 Z"/>
+
+                                <!-- Shoulders Back -->
+                                <path id="svg-shoulders-bl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
+                                <path id="svg-shoulders-br" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
+
+                                <!-- Triceps -->
+                                <path id="svg-triceps-l" class="m-group" d="M25 52 C27 58 28 66 28 72 C25 73 22 71 21 65 C21 58 23 53 25 52 Z"/>
+                                <path id="svg-triceps-r" class="m-group" d="M75 52 C73 58 72 66 72 72 C75 73 78 71 79 65 C79 58 77 53 75 52 Z"/>
+
+                                <!-- Forearms Back -->
+                                <path id="svg-forearms-bl" class="m-group" d="M21 76 C20 84 19 95 21 105 C24 105 26 100 27 92 C28 84 26 78 24 76 Z"/>
+                                <path id="svg-forearms-br" class="m-group" d="M79 76 C80 84 81 95 79 105 C76 105 74 100 73 92 C72 84 74 78 76 76 Z"/>
+
+                                <!-- Glutes & Hamstrings / Legs Back -->
+                                <path id="svg-legs-bl" class="m-group" d="M36 95 C42 95 48 97 48 111 C48 134 46 157 44 167 C39 167 35 151 35 124 C35 107 35 97 36 95 Z"/>
+                                <path id="svg-legs-br" class="m-group" d="M64 95 C58 95 52 97 52 111 C52 134 54 157 56 167 C61 167 65 151 65 124 C65 107 65 97 64 95 Z"/>
+
+                                <!-- Calves Back -->
+                                <path id="svg-calves-bl" class="m-group" d="M35 170 C32 178 33 194 36 204 C39 204 42 198 43 187 C44 177 41 171 39 170 Z"/>
+                                <path id="svg-calves-br" class="m-group" d="M65 170 C68 178 67 194 64 204 C61 204 58 198 57 187 C56 177 59 171 61 170 Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: WEIGH-IN & TARGET GOALS -->
+            <div id="tab-weighin" class="tab-content">
+                <div class="section-header">
+                    <span>Composition Corporelle & Objectifs (+500 EXP Bonus)</span>
+                    <i class="fa-solid fa-bullseye"></i>
+                </div>
+
+                <!-- Weigh-in Warning Banner -->
+                <div class="warning-banner" id="weigh-warning-banner">
+                    <span><i class="fa-solid fa-bell"></i> Status Pesée :</span>
+                    <strong id="weigh-warning-text">Rappel : Pesée dans 3 jours</strong>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                    <!-- Left: Form & Target Config -->
+                    <div>
+                        <div class="section-header" style="font-size: 0.95rem;">Enregistrer une Pesée</div>
+                        <form onsubmit="recordWeight(event)">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="form-group">
+                                    <label>Poids (kg)</label>
+                                    <input type="number" step="0.1" class="form-control" id="input-weight" placeholder="ex: 75.5" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Masse Grasse (%)</label>
+                                    <input type="number" step="0.1" class="form-control" id="input-bodyfat" placeholder="ex: 15.0" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-action" style="width: 100%; margin-bottom: 15px;">
+                                Valider la Pesée (+50 EXP)
+                            </button>
+                        </form>
+
+                        <div class="section-header" style="font-size: 0.95rem; margin-top: 15px;">Définir mes Objectifs Visés</div>
+                        <form onsubmit="setGoals(event)">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="form-group">
+                                    <label>Poids Cible (kg)</label>
+                                    <input type="number" step="0.1" class="form-control" id="target-weight-input" placeholder="ex: 80.0">
+                                </div>
+                                <div class="form-group">
+                                    <label>% MG Cible (%)</label>
+                                    <input type="number" step="0.1" class="form-control" id="target-bf-input" placeholder="ex: 12.0">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-quest-action" style="width: 100%;">Mettre à Jour les Objectifs</button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Target Progress Bars & History -->
+                    <div>
+                        <div class="section-header" style="font-size: 0.95rem;">Progression vers les Objectifs</div>
+                        
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 15px; margin-bottom: 15px;">
+                            <!-- Weight Goal Bar -->
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-family:'Orbitron';">
+                                    <span>Progression Poids</span>
+                                    <span id="label-goal-weight">-- / -- kg</span>
+                                </div>
+                                <div class="bar-outer" style="height: 12px; margin-top: 4px;">
+                                    <div class="bar-inner" id="fill-goal-weight" style="width: 0%; background: linear-gradient(90deg, #10b981, #00f0ff);"></div>
+                                </div>
+                            </div>
+
+                            <!-- Bodyfat Goal Bar -->
+                            <div>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-family:'Orbitron';">
+                                    <span>Progression % MG</span>
+                                    <span id="label-goal-bf">-- / -- %</span>
+                                </div>
+                                <div class="bar-outer" style="height: 12px; margin-top: 4px;">
+                                    <div class="bar-inner" id="fill-goal-bf" style="width: 0%; background: linear-gradient(90deg, #a855f7, #ffd700);"></div>
+                                </div>
+                            </div>
+
+                            <div style="font-size: 0.8rem; color: var(--gold); margin-top: 10px; font-family: 'Orbitron'; text-align: center;">
+                                <i class="fa-solid fa-trophy"></i> Récompense : +500 EXP lors de l'accomplissement des 2 objectifs !
+                            </div>
+                        </div>
+
+                        <div class="section-header" style="font-size: 0.95rem;">Historique des Pesées</div>
+                        <div id="weight-history-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;">
+                            <!-- List JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER LOG -->
+        <footer>
+            <div class="system-log" id="system-log">
+                <span style="color: var(--gold); font-weight: bold;">[SYSTÈME]</span>
+                <span id="log-message">Système initialisé. Réalisez vos objectifs pour débloquer votre potentiel.</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- LEVEL UP MODAL -->
+    <div class="level-up-overlay" id="level-up-modal">
+        <div class="level-up-box">
+            <h2 style="font-family: 'Orbitron'; font-size: 2.5rem; color: #fff; text-shadow: 0 0 20px var(--neon-blue); margin-bottom: 10px;">LEVEL UP !</h2>
+            <div style="font-size: 1.3rem; color: var(--neon-cyan); font-family: 'Orbitron'; margin-bottom: 10px;">
+                Niveau <span id="modal-level-val">2</span> Atteint
+            </div>
+            <div style="font-size: 1.1rem; color: var(--gold); font-family: 'Orbitron'; margin-bottom: 20px;" id="modal-rank-val">
+                Rang Civile
+            </div>
+            <p style="color: #c0e0f0; margin-bottom: 25px;">Vos attributs physiques continuent d'évoluer !</p>
+            <button class="btn-action" onclick="closeLevelUpModal()">CONTINUER</button>
+        </div>
+    </div>
+
+    <script>
+        const weeklyPrograms = {
+            1: "Pec, Triceps, Épaules", 
+            2: "Dos & Biceps",          
+            3: "Jambes & Abdominaux",   
+            4: "Pec, Triceps, Épaules", 
+            5: "Dos & Biceps",          
+            6: "Repos",                 
+            0: "Repos"                  
+        };
+
+        const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+
+        // GAME STATE
+        const state = {
+            level: 1,
+            exp: 0,
+            maxExp: 100,
+            creatineDone: false,
+            steps: 0,
+            workoutDone: false,
+            questClaimed: false,
+            weighDay: 0,
+            weightHistory: [],
+            targetWeight: 80,
+            targetBodyFat: 12,
+            bothTargetsReached: false,
+            stats: {
+                strength: 0, 
+                endurance: 0,
+                muscleMass: 0,
+                willpower: 0 
+            },
+            musclesWorked: {
+                pecs: false,
+                back: false,
+                shoulders: false,
+                biceps: false,
+                triceps: false,
+                abs: false,
+                legs: false
+            }
+        };
+
+        function getRank(level) {
+            if (level < 15) return "Rang Civile";
+            if (level < 25) return "Rang E";
+            if (level < 40) return "Rang C";
+            if (level < 55) return "Rang B";
+            if (level < 75) return "Rang A";
+            return "Rang S";
+        }
+
+        // AUDIO SYNTHESIZER
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(f1, f2, d) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f1, audioCtx.currentTime);
+            if (f2) osc.frequency.exponentialRampToValueAtTime(f2, audioCtx.currentTime + d);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + d);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + d);
+        }
+
+        function initDailyConfig() {
+            const today = new Date().getDay();
+            const todayName = dayNames[today];
+            const programName = weeklyPrograms[today];
+
+            document.getElementById('today-name').innerText = todayName;
+            document.getElementById('today-program-title').innerText = programName;
+
+            const isWeekend = (today === 0 || today === 6);
+            const workoutBox = document.getElementById('workout-goal-container');
+
+            if (isWeekend) {
+                workoutBox.style.display = 'none';
+                state.workoutDone = true;
+            } else {
+                workoutBox.style.display = 'grid';
+                document.getElementById('workout-goal-label').innerText = `Séance : ${programName}`;
+            }
+
+            updateWeighWarning();
+        }
+
+        function updateWeighWarning() {
+            const today = new Date().getDay();
+            const targetDay = parseInt(state.weighDay);
+            let daysLeft = targetDay - today;
+            if (daysLeft < 0) daysLeft += 7;
+
+            const banner = document.getElementById('weigh-warning-banner');
+            const text = document.getElementById('weigh-warning-text');
+
+            if (daysLeft === 0) {
+                banner.className = "warning-banner alert";
+                text.innerText = "PESÉE REQUISE AUJOURD'HUI ! enregistrez vos données.";
+            } else {
+                banner.className = "warning-banner";
+                text.innerText = `Rappel Pesée : Dans ${daysLeft} jour(s) (${dayNames[targetDay]})`;
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('player-level').innerText = state.level;
+            document.getElementById('player-rank').innerText = getRank(state.level);
+
+            document.getElementById('exp-text').innerText = `${state.exp} / ${state.maxExp} EXP`;
+            document.getElementById('exp-fill').style.width = `${Math.min(100, (state.exp / state.maxExp) * 100)}%`;
+
+            // Attributes
+            document.getElementById('stat-str').innerText = state.stats.strength;
+            document.getElementById('stat-end').innerText = state.stats.endurance;
+            document.getElementById('stat-mass').innerText = state.stats.muscleMass;
+            document.getElementById('stat-will').innerText = state.stats.willpower;
+
+            // Quest Goals
+            document.getElementById('creatine-status').innerText = state.creatineDone ? "Validé" : "Non pris";
+            document.getElementById('creatine-status').style.color = state.creatineDone ? "var(--success-green)" : "var(--neon-cyan)";
+            document.getElementById('chk-creatine').checked = state.creatineDone;
+
+            document.getElementById('steps-count').innerText = `${state.steps.toLocaleString()} / 10 000`;
+            document.getElementById('steps-count').style.color = state.steps >= 10000 ? "var(--success-green)" : "var(--neon-cyan)";
+
+            document.getElementById('workout-status').innerText = state.workoutDone ? "Complétée" : "À effectuer";
+            document.getElementById('workout-status').style.color = state.workoutDone ? "var(--success-green)" : "var(--neon-cyan)";
+            document.getElementById('chk-workout').checked = state.workoutDone;
+
+            const isReady = state.creatineDone && state.steps >= 10000 && state.workoutDone && !state.questClaimed;
+            document.getElementById('btn-claim-quest').disabled = !isReady;
+
+            // Weight & Goal Progress
+            if (state.weightHistory.length > 0) {
+                const latest = state.weightHistory[0];
+                const initial = state.weightHistory[state.weightHistory.length - 1];
+
+                document.getElementById('display-last-weight').innerText = `${latest.weight} kg (${latest.bodyFat}%)`;
+                document.getElementById('display-lean-mass').innerText = `${latest.leanMass} kg`;
+
+                // Relative Weight Goal Progress
+                document.getElementById('label-goal-weight').innerText = `${latest.weight} / ${state.targetWeight} kg`;
+                let weightPct = 0;
+                if (initial.weight !== state.targetWeight) {
+                    weightPct = ((latest.weight - initial.weight) / (state.targetWeight - initial.weight)) * 100;
+                } else {
+                    weightPct = 100;
+                }
+                document.getElementById('fill-goal-weight').style.width = `${Math.min(100, Math.max(0, weightPct))}%`;
+
+                // Relative BodyFat Goal Progress
+                document.getElementById('label-goal-bf').innerText = `${latest.bodyFat} / ${state.targetBodyFat} %`;
+                let bfPct = 0;
+                if (initial.bodyFat !== state.targetBodyFat) {
+                    bfPct = ((latest.bodyFat - initial.bodyFat) / (state.targetBodyFat - initial.bodyFat)) * 100;
+                } else {
+                    bfPct = 100;
+                }
+                document.getElementById('fill-goal-bf').style.width = `${Math.min(100, Math.max(0, bfPct))}%`;
+
+                // SINGLE BONUS +500 EXP WHEN BOTH TARGETS ARE MET
+                if (weightPct >= 100 && bfPct >= 100 && !state.bothTargetsReached) {
+                    state.bothTargetsReached = true;
+                    addExp(500);
+                    playSound(300, 1500, 0.6);
+                    logMessage("🎉 DOUBLE OBJECTIF ATTEINT ! BONUS DU SYSTÈME : +500 EXP ATTRIBUÉS !");
+                }
+            }
+
+            renderWeightHistory();
+            updateAnatomyDiagram();
+        }
+
+        // ANATOMY TOGGLES
+        function toggleMuscle(group) {
+            audioCtx.resume();
+            playSound(600, 800, 0.05);
+            state.musclesWorked[group] = !state.musclesWorked[group];
+            
+            const btn = document.getElementById(`btn-m-${group}`);
+            if (state.musclesWorked[group]) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+
+            updateAnatomyDiagram();
+        }
+
+        function updateAnatomyDiagram() {
+            const svgMap = {
+                pecs: ['svg-pecs-l', 'svg-pecs-r'],
+                shoulders: ['svg-shoulders-fl', 'svg-shoulders-fr', 'svg-shoulders-bl', 'svg-shoulders-br'],
+                biceps: ['svg-biceps-l', 'svg-biceps-r'],
+                triceps: ['svg-triceps-l', 'svg-triceps-r'],
+                abs: ['svg-abs'],
+                back: ['svg-back'],
+                legs: ['svg-legs-fl', 'svg-legs-fr', 'svg-legs-bl', 'svg-legs-br']
+            };
+
+            for (const [key, ids] of Object.entries(svgMap)) {
+                const isActive = state.musclesWorked[key];
+                ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        if (isActive) el.classList.add('active');
+                        else el.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        // QUEST ACTIONS
+        function toggleCreatine() {
+            audioCtx.resume();
+            playSound(600, 800, 0.05);
+            state.creatineDone = document.getElementById('chk-creatine').checked;
+            updateUI();
+        }
+
+        function toggleWorkout() {
+            audioCtx.resume();
+            playSound(600, 800, 0.05);
+            const wasDone = state.workoutDone;
+            state.workoutDone = document.getElementById('chk-workout').checked;
+
+            if (!wasDone && state.workoutDone) {
+                state.stats.strength += 1;
+                logMessage("Séance validée ! +1 Point de Force.");
+            } else if (wasDone && !state.workoutDone) {
+                state.stats.strength = Math.max(0, state.stats.strength - 1);
+            }
+
+            updateUI();
+        }
+
+        function addSteps(amount) {
+            audioCtx.resume();
+            playSound(700, 900, 0.05);
+            const prevSteps = state.steps;
+            state.steps = Math.max(0, Math.min(10000, state.steps + amount));
+
+            if (prevSteps < 10000 && state.steps >= 10000) {
+                state.stats.endurance += 1;
+                logMessage("10 000 Pas atteints ! +1 Point d'Endurance.");
+            }
+
+            updateUI();
+        }
+
+        function setCustomSteps() {
+            const input = document.getElementById('input-custom-steps');
+            const val = parseInt(input.value);
+            if (!isNaN(val) && val >= 0) {
+                audioCtx.resume();
+                playSound(700, 900, 0.05);
+                const prevSteps = state.steps;
+                state.steps = Math.min(10000, val);
+
+                if (prevSteps < 10000 && state.steps >= 10000) {
+                    state.stats.endurance += 1;
+                    logMessage("10 000 Pas atteints ! +1 Point d'Endurance.");
+                }
+
+                input.value = '';
+                updateUI();
+            }
+        }
+
+        function claimDailyQuest() {
+            if (!state.questClaimed) {
+                playSound(400, 1000, 0.3);
+                state.questClaimed = true;
+                document.getElementById('btn-claim-quest').innerText = "RÉCOMPENSES REÇUES";
+                document.getElementById('btn-claim-quest').disabled = true;
+
+                state.stats.willpower += 1;
+                addExp(150);
+                logMessage("Quête accomplie ! +150 EXP et +1 Point de Volonté.");
+            }
+        }
+
+        // WEIGHT & GOALS ACTIONS
+        function recordWeight(e) {
+            e.preventDefault();
+            audioCtx.resume();
+            playSound(600, 1000, 0.1);
+
+            const weightVal = parseFloat(document.getElementById('input-weight').value);
+            const bfVal = parseFloat(document.getElementById('input-bodyfat').value);
+            const dateStr = new Date().toLocaleDateString('fr-FR');
+
+            const leanMassVal = parseFloat((weightVal * (1 - (bfVal / 100))).toFixed(1));
+            state.stats.muscleMass = Math.round(leanMassVal);
+
+            state.weightHistory.unshift({
+                date: dateStr,
+                weight: weightVal,
+                bodyFat: bfVal,
+                leanMass: leanMassVal
+            });
+
+            document.getElementById('input-weight').value = '';
+            document.getElementById('input-bodyfat').value = '';
+
+            addExp(50);
+            logMessage(`Pesée enregistrée (${weightVal}kg). Masse Maigre : ${leanMassVal}kg.`);
+            updateUI();
+        }
+
+        function setGoals(e) {
+            e.preventDefault();
+            audioCtx.resume();
+            playSound(700, 900, 0.05);
+
+            const w = parseFloat(document.getElementById('target-weight-input').value);
+            const bf = parseFloat(document.getElementById('target-bf-input').value);
+
+            if (!isNaN(w)) state.targetWeight = w;
+            if (!isNaN(bf)) state.targetBodyFat = bf;
+
+            // Reset combined flag to allow re-triggering reward if new goals are set
+            state.bothTargetsReached = false;
+
+            logMessage(`Objectifs mis à jour : ${state.targetWeight} kg / ${state.targetBodyFat}% MG.`);
+            updateUI();
+        }
+
+        function renderWeightHistory() {
+            const list = document.getElementById('weight-history-list');
+            if (state.weightHistory.length === 0) {
+                list.innerHTML = `<div style="color: #5080a0; font-size: 0.85rem;">Aucune pesée enregistrée.</div>`;
+                return;
+            }
+
+            list.innerHTML = state.weightHistory.map(item => `
+                <div style="background: rgba(0,30,60,0.4); border-left: 3px solid var(--neon-cyan); padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 0.75rem; color: #a0c0d0;">${item.date}</span><br>
+                        <strong style="color: #fff; font-family: 'Orbitron'; font-size: 0.9rem;">${item.weight} kg</strong> (${item.bodyFat}% MG)
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 0.75rem; color: var(--gold);">Maigre</span><br>
+                        <strong style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 0.9rem;">${item.leanMass} kg</strong>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // EXP & LEVEL UP
+        function addExp(amount) {
+            state.exp += amount;
+            while (state.exp >= state.maxExp) {
+                state.level++;
+                state.exp -= state.maxExp;
+                state.maxExp = Math.floor(state.maxExp * 1.15);
+
+                playSound(400, 1200, 0.4);
+                document.getElementById('modal-level-val').innerText = state.level;
+                document.getElementById('modal-rank-val').innerText = getRank(state.level);
+                document.getElementById('level-up-modal').classList.add('show');
+            }
+            updateUI();
+        }
+
+        function closeLevelUpModal() {
+            playSound(500, 300, 0.1);
+            document.getElementById('level-up-modal').classList.remove('show');
+        }
+
+        function logMessage(msg) {
+            document.getElementById('log-message').innerText = msg;
+        }
+
+        function switchTab(tabId) {
+            audioCtx.resume();
+            playSound(700, 500, 0.05);
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            
+            const btnMap = { status: 0, quest: 1, workout: 2, weighin: 3 };
+            document.querySelectorAll('.nav-btn')[btnMap[tabId]].classList.add('active');
+        }
+
+        window.onload = () => {
+            initDailyConfig();
+            updateUI();
+        };
+    </script>
+</body>
+</html>
