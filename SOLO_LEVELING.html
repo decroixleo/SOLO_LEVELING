@@ -1034,6 +1034,27 @@
             musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false }
         };
 
+        function resetDefaultState() {
+            state = {
+                level: 1,
+                exp: 0,
+                maxExp: 100,
+                creatineDone: false,
+                gripDone: false,
+                steps: 0,
+                workoutDone: false,
+                questClaimed: false,
+                weighDay: 0,
+                weightHistory: [],
+                targetWeight: 80,
+                targetBodyFat: 12,
+                bothTargetsReached: false,
+                stats: { strength: 0, endurance: 0, muscleMass: 0, willpower: 0 },
+                musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false }
+            };
+            updateUI();
+        }
+
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -1114,7 +1135,10 @@
 
         async function logout() {
             await supabase.auth.signOut();
-            location.reload();
+            currentUser = null;
+            resetDefaultState();
+            document.getElementById('auth-screen').style.display = 'flex';
+            logMessage("Déconnexion réussie. Veuillez vous identifier.");
         }
 
         async function saveUserData() {
@@ -1138,7 +1162,7 @@
                 logMessage("Données du joueur chargées depuis le cloud.");
             } else {
                 await saveUserData();
-                logMessage("Nouveau profil initialisé.");
+                logMessage("Nouveau profil initialisé dans le cloud.");
             }
             updateUI();
         }
@@ -1260,6 +1284,13 @@
                     playSound(300, 1500, 0.6);
                     logMessage("🎉 DOUBLE OBJECTIF ATTEINT ! BONUS DU SYSTÈME : +500 EXP ATTRIBUÉS !");
                 }
+            } else {
+                document.getElementById('display-last-weight').innerText = "-- kg";
+                document.getElementById('display-lean-mass').innerText = "-- kg";
+                document.getElementById('label-goal-weight').innerText = "-- / -- kg";
+                document.getElementById('label-goal-bf').innerText = "-- / -- %";
+                document.getElementById('fill-goal-weight').style.width = "0%";
+                document.getElementById('fill-goal-bf').style.width = "0%";
             }
 
             renderWeightHistory();
@@ -1497,6 +1528,11 @@
                 currentUser = data.session.user;
                 document.getElementById('auth-screen').style.display = 'none';
                 await loadUserData();
+            } else {
+                currentUser = null;
+                resetDefaultState();
+                document.getElementById('auth-screen').style.display = 'flex';
+                logMessage("Système initialisé. Connexion requise.");
             }
         };
     </script>
