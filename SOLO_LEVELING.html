@@ -642,7 +642,7 @@
     <div class="system-glow"></div>
 
     <div class="system-container">
-        header>
+        <header>
             <div class="title-group">
                 <i class="fa-solid fa-bolt system-icon"></i>
                 <h1>Système // Programme Entraînement</h1>
@@ -818,10 +818,11 @@
 
                 <div class="grid-2col">
                     <div>
-                        <!-- FORMULAIRE DE CRÉATION DE SÉANCE -->
+                        <!-- FORMULAIRE DE CRÉATION / MODIFICATION DE SÉANCE -->
                         <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
-                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: var(--gold); margin-bottom: 10px;">Créer une Nouvelle Séance</h3>
-                            <form onsubmit="createCustomRoutine(event)">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: var(--gold); margin-bottom: 10px;" id="routine-form-title">Créer une Nouvelle Séance</h3>
+                            <form onsubmit="saveCustomRoutine(event)">
+                                <input type="hidden" id="editing-routine-id" value="">
                                 <div class="form-group">
                                     <label>Nom de la Séance</label>
                                     <input type="text" id="routine-name-input" class="form-control" placeholder="ex: Dos / Biceps" required>
@@ -848,7 +849,10 @@
                                     <label class="muscle-check-item"><input type="checkbox" value="abs" class="chk-m"> Abdominaux</label>
                                     <label class="muscle-check-item"><input type="checkbox" value="legs" class="chk-m"> Jambes</label>
                                 </div>
-                                <button type="submit" class="btn-quest-action" style="width:100%; margin-top:8px;">+ Ajouter la Séance</button>
+                                <div style="display:flex; gap:6px;">
+                                    <button type="submit" class="btn-quest-action" style="flex:1; margin-top:8px;" id="btn-save-routine">+ Enregistrer la Séance</button>
+                                    <button type="button" class="btn-quest-action" style="margin-top:8px; border-color:var(--danger-red); color:#ff99b3; display:none;" id="btn-cancel-edit" onclick="cancelEditRoutine()">Annuler</button>
+                                </div>
                             </form>
                         </div>
 
@@ -862,7 +866,7 @@
                     <!-- SCHEMA CORPOREL AUTOMATIQUE -->
                     <div>
                         <p style="font-size: 0.8rem; color: #72a8c8; margin-bottom: 10px; text-align: center;">
-                            * Les muscles de la séance validée dans vos quêtes s'éclairent automatiquement et se réinitialisent le dimanche.
+                            * Les muscles de la séance validée dans vos quêtes s'éclairent automatiquement et se réinitialisent le dimanche à 23h59.
                         </p>
                         <div class="hevy-anatomy-container">
                             <div style="text-align: center;">
@@ -882,7 +886,7 @@
                                     <path id="svg-legs-fl" class="m-group" d="M34 118 C35 135 34 156 34 166 C39 167 45 166 46 153 C47 140 47 126 46 118 Z"/>
                                     <path id="svg-legs-fr" class="m-group" d="M66 118 C65 135 66 156 66 166 C61 167 55 166 54 153 C53 140 53 126 54 118 Z"/>
                                     <path id="svg-calves-fl" class="m-group" d="M35 170 C33 180 34 196 36 204 C39 204 41 198 42 188 C43 178 41 171 39 170 Z"/>
-                                    <path id="svg-calves-fr" class="m-group" d="M65 170 C67 180 66 196 64 204 C61 204 59 198 58 188 C57 178 59 171 61 170 Z"/>
+                                    <path id="svg-calves-fr" class="m-group" d="M65 170 C67 180 66 196 64 204 C61 204 58 198 58 188 C57 178 59 171 61 170 Z"/>
                                 </svg>
                             </div>
 
@@ -1050,8 +1054,10 @@
             const oneJan = new Date(year, 0, 1);
             const weekNum = Math.ceil((((today - oneJan) / 86400000) + oneJan.getDay() + 1) / 7);
 
+            // Réinitialisation automatique le dimanche
             if (today.getDay() === 0 && state.lastResetWeek !== weekNum) {
                 state.musclesWorked = { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false };
+                state.workoutDone = false;
                 state.lastResetWeek = weekNum;
                 saveUserData();
             }
@@ -1334,8 +1340,9 @@
             updateAnatomyDiagram();
         }
 
-        function createCustomRoutine(e) {
+        function saveCustomRoutine(e) {
             e.preventDefault();
+            const editId = document.getElementById('editing-routine-id').value;
             const name = document.getElementById('routine-name-input').value.trim();
             const dayCheckboxes = document.querySelectorAll('.chk-d:checked');
             const muscleCheckboxes = document.querySelectorAll('.chk-m:checked');
@@ -1348,28 +1355,68 @@
                 return;
             }
 
-            const newRoutine = {
-                id: Date.now(),
-                name: name,
-                days: selectedDays,
-                muscles: selectedMuscles
-            };
-
             if (!state.routines) state.routines = [];
-            state.routines.push(newRoutine);
 
-            document.getElementById('routine-name-input').value = '';
-            dayCheckboxes.forEach(cb => cb.checked = false);
-            muscleCheckboxes.forEach(cb => cb.checked = false);
+            if (editId) {
+                // Modification d'une séance existante
+                const routine = state.routines.find(r => r.id == editId);
+                if (routine) {
+                    routine.name = name;
+                    routine.days = selectedDays;
+                    routine.muscles = selectedMuscles;
+                    logMessage(`Séance "${name}" mise à jour.`);
+                }
+            } else {
+                // Création d'une nouvelle séance
+                const newRoutine = {
+                    id: Date.now(),
+                    name: name,
+                    days: selectedDays,
+                    muscles: selectedMuscles
+                };
+                state.routines.push(newRoutine);
+                logMessage(`Séance "${name}" enregistrée.`);
+            }
 
-            logMessage(`Séance "${name}" enregistrée.`);
+            cancelEditRoutine();
             saveUserData();
             initDailyConfig();
             updateUI();
         }
 
+        function editRoutine(id) {
+            const routine = state.routines.find(r => r.id === id);
+            if (!routine) return;
+
+            document.getElementById('editing-routine-id').value = routine.id;
+            document.getElementById('routine-name-input').value = routine.name;
+            document.getElementById('routine-form-title').innerText = "Modifier la Séance";
+            document.getElementById('btn-save-routine').innerText = "Enregistrer les modifications";
+            document.getElementById('btn-cancel-edit').style.display = "inline-block";
+
+            document.querySelectorAll('.chk-d').forEach(cb => {
+                cb.checked = routine.days && routine.days.includes(parseInt(cb.value));
+            });
+
+            document.querySelectorAll('.chk-m').forEach(cb => {
+                cb.checked = routine.muscles && routine.muscles.includes(cb.value);
+            });
+        }
+
+        function cancelEditRoutine() {
+            document.getElementById('editing-routine-id').value = "";
+            document.getElementById('routine-name-input').value = "";
+            document.getElementById('routine-form-title').innerText = "Créer une Nouvelle Séance";
+            document.getElementById('btn-save-routine').innerText = "+ Enregistrer la Séance";
+            document.getElementById('btn-cancel-edit').style.display = "none";
+
+            document.querySelectorAll('.chk-d').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.chk-m').forEach(cb => cb.checked = false);
+        }
+
         function deleteRoutine(id) {
             state.routines = state.routines.filter(r => r.id !== id);
+            cancelEditRoutine();
             saveUserData();
             initDailyConfig();
             updateUI();
@@ -1398,7 +1445,8 @@
                                 ${r.muscles.join(', ')}
                             </div>
                         </div>
-                        <div>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn-quest-action" style="border-color: var(--neon-blue); color:var(--neon-blue);" onclick="editRoutine(${r.id})"><i class="fa-solid fa-pen"></i></button>
                             <button class="btn-quest-action" style="border-color: var(--danger-red); color:#ff99b3;" onclick="deleteRoutine(${r.id})"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
