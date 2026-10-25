@@ -462,11 +462,7 @@
             stroke: #1a202c;
             stroke-width: 0.6;
             transition: all 0.35s ease;
-            cursor: pointer;
-        }
-
-        .m-group:hover {
-            fill: #70b8ff;
+            pointer-events: none;
         }
 
         .m-group.active {
@@ -476,32 +472,32 @@
             filter: drop-shadow(0 0 6px #0095ff) drop-shadow(0 0 12px #00f0ff);
         }
 
-        .muscle-toggle-grid {
+        .muscle-checklist {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-top: 12px;
+            gap: 6px;
+            margin-bottom: 10px;
         }
 
-        .btn-muscle {
-            background: rgba(0, 30, 60, 0.6);
-            border: 1px solid rgba(0, 210, 255, 0.3);
-            color: #8be3ff;
-            padding: 8px 10px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
+        .muscle-check-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: #a0c0d0;
+            background: rgba(0, 20, 40, 0.5);
+            padding: 4px 8px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
         }
 
-        .btn-muscle.active {
-            background: rgba(0, 240, 255, 0.25);
-            border-color: var(--neon-blue);
-            color: #fff;
-            box-shadow: 0 0 10px var(--accent-glow);
+        .routine-card {
+            background: rgba(0, 30, 60, 0.5);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         footer {
@@ -606,7 +602,7 @@
 </head>
 <body>
 
-    <!-- OVERLAY DE CONNEXION : VISIBLE PAR DÉFAUT -->
+    <!-- OVERLAY DE CONNEXION -->
     <div class="auth-overlay" id="auth-screen" style="display: flex;">
         <div class="auth-box">
             <div class="auth-title"><i class="fa-solid fa-shield-halved"></i> IDENTIFICATION DU JOUEUR</div>
@@ -659,7 +655,7 @@
                     <i class="fa-solid fa-scroll"></i> Quête
                 </button>
                 <button class="nav-btn" onclick="switchTab('workout')">
-                    <i class="fa-solid fa-child-reaching"></i> Anatomie
+                    <i class="fa-solid fa-dumbbell"></i> Séance
                 </button>
                 <button class="nav-btn" onclick="switchTab('weighin')">
                     <i class="fa-solid fa-weight-scale"></i> Pesée
@@ -703,10 +699,6 @@
                                 <div class="bar-inner" id="exp-fill" style="width: 0%;"></div>
                             </div>
                         </div>
-
-                        <button class="btn-action" style="margin-top: 15px;" onclick="addExp(50)">
-                            +50 EXP (Test rapide)
-                        </button>
                     </div>
 
                     <div>
@@ -744,7 +736,7 @@
                             <i class="fa-solid fa-exclamation-triangle"></i> QUÊTE QUOTIDIENNE
                         </div>
                         <div style="font-size: 0.85rem; color: #a0c0d0; margin-top: 4px;">
-                            Aujourd'hui : <strong id="today-name" style="color: var(--gold);">Lundi</strong> — <span id="today-program-title" style="color: #fff;">Pec, Triceps, Épaules</span>
+                            Aujourd'hui : <strong id="today-name" style="color: var(--gold);">Lundi</strong>
                         </div>
                     </div>
 
@@ -794,7 +786,7 @@
                         <div class="goal-item" id="workout-goal-container">
                             <div class="goal-name">
                                 <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
-                                <span id="workout-goal-label">Séance du jour</span>
+                                <span>Séance de musculation</span>
                             </div>
                             <div class="goal-progress" id="workout-status">À effectuer</div>
                             <div style="align-self: flex-end;">
@@ -817,79 +809,89 @@
                 </div>
             </div>
 
+            <!-- ONGLET SÉANCE RESTRUCTURÉ -->
             <div id="tab-workout" class="tab-content">
                 <div class="section-header">
-                    <span>Programme & Carte Musculaire</span>
-                    <i class="fa-solid fa-child-reaching"></i>
+                    <span>Gestion des Séances & Schéma Musculaire</span>
+                    <i class="fa-solid fa-dumbbell"></i>
                 </div>
 
                 <div class="grid-2col">
                     <div>
+                        <!-- FORMULAIRE DE CRÉATION DE SÉANCE -->
                         <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
-                            <h3 style="font-family:'Orbitron'; font-size: 0.85rem; color: var(--gold); margin-bottom: 8px;">Planning Hebdomadaire</h3>
-                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem;">
-                                <li><strong style="color:var(--neon-cyan);">Lun & Jeu :</strong> Pecs, Triceps, Épaules</li>
-                                <li><strong style="color:var(--neon-cyan);">Mar & Ven :</strong> Dos & Biceps</li>
-                                <li><strong style="color:var(--neon-cyan);">Mer :</strong> Jambes & Abdominaux</li>
-                                <li><strong style="color:var(--neon-cyan);">Sam & Dim :</strong> Repos / Récupération</li>
-                            </ul>
+                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: var(--gold); margin-bottom: 10px;">Créer une Nouvelle Séance</h3>
+                            <form onsubmit="createCustomRoutine(event)">
+                                <div class="form-group">
+                                    <label>Nom de la Séance</label>
+                                    <input type="text" id="routine-name-input" class="form-control" placeholder="ex: Pecs / Triceps" required>
+                                </div>
+                                <label style="font-family:'Orbitron'; font-size:0.75rem; color: var(--neon-cyan); display:block; margin-bottom:6px;">Muscles Ciblés :</label>
+                                <div class="muscle-checklist">
+                                    <label class="muscle-check-item"><input type="checkbox" value="pecs" class="chk-m"> Pectoraux</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="back" class="chk-m"> Dos</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="shoulders" class="chk-m"> Épaules</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="biceps" class="chk-m"> Biceps</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="triceps" class="chk-m"> Triceps</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="abs" class="chk-m"> Abdominaux</label>
+                                    <label class="muscle-check-item"><input type="checkbox" value="legs" class="chk-m"> Jambes</label>
+                                </div>
+                                <button type="submit" class="btn-quest-action" style="width:100%; margin-top:8px;">+ Ajouter la Séance</button>
+                            </form>
                         </div>
 
+                        <!-- LISTE DES SÉANCES CRÉÉES -->
                         <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
-                            <h3 style="font-family:'Orbitron'; font-size: 0.85rem; color: #fff; margin-bottom: 6px;">Muscles Travaillés</h3>
-                            <p style="font-size: 0.75rem; color: #72a8c8; margin-bottom: 8px;">Les muscles illuminés en bleu néon ont été entraînés.</p>
-                            
-                            <div class="muscle-toggle-grid">
-                                <button class="btn-muscle" id="btn-m-pecs" onclick="toggleMuscle('pecs')">Pectoraux <i class="fa-solid fa-check"></i></button>
-                                <button class="btn-muscle" id="btn-m-back" onclick="toggleMuscle('back')">Dos <i class="fa-solid fa-check"></i></button>
-                                <button class="btn-muscle" id="btn-m-shoulders" onclick="toggleMuscle('shoulders')">Épaules <i class="fa-solid fa-check"></i></button>
-                                <button class="btn-muscle" id="btn-m-biceps" onclick="toggleMuscle('biceps')">Biceps <i class="fa-solid fa-check"></i></button>
-                                <button class="btn-muscle" id="btn-m-triceps" onclick="toggleMuscle('triceps')">Triceps <i class="fa-solid fa-check"></i></button>
-                                <button class="btn-muscle" id="btn-m-abs" onclick="toggleMuscle('abs')">Abdominaux <i class="fa-solid fa-check"></i></button>
-                                <button class="btn-muscle" id="btn-m-legs" onclick="toggleMuscle('legs')">Jambes/Quads <i class="fa-solid fa-check"></i></button>
-                            </div>
+                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: #fff; margin-bottom: 8px;">Mes Séances</h3>
+                            <div id="routines-list"></div>
                         </div>
                     </div>
 
-                    <div class="hevy-anatomy-container">
-                        <div style="text-align: center;">
-                            <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">FACE</div>
-                            <svg class="hevy-body-svg" viewBox="0 0 100 220">
-                                <circle class="m-head" cx="50" cy="18" r="9"/>
-                                <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
-                                <path id="svg-pecs-l" class="m-group" d="M36 43 C42 43 49 45 49 57 C41 58 35 55 33 50 C33 46 34 43 36 43 Z"/>
-                                <path id="svg-pecs-r" class="m-group" d="M64 43 C58 43 51 45 51 57 C59 58 65 55 67 50 C67 46 66 43 64 43 Z"/>
-                                <path id="svg-shoulders-fl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
-                                <path id="svg-shoulders-fr" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
-                                <path id="svg-biceps-l" class="m-group" d="M26 60 C23 66 22 74 22 81 C25 82 28 80 29 74 C30 68 29 61 28 60 Z"/>
-                                <path id="svg-biceps-r" class="m-group" d="M74 60 C77 66 78 74 78 81 C75 82 72 80 71 74 C70 68 71 61 72 60 Z"/>
-                                <path id="svg-forearms-fl" class="m-group" d="M22 84 C20 90 19 98 21 106 C24 106 26 102 27 96 C28 90 27 85 25 84 Z"/>
-                                <path id="svg-forearms-fr" class="m-group" d="M78 84 C80 90 81 98 79 106 C76 106 74 102 73 96 C72 90 73 85 75 84 Z"/>
-                                <path id="svg-abs" class="m-group" d="M41 60 L49 60 L49 69 L41 69 Z M51 60 L59 60 L59 69 L51 69 Z M41 71 L49 71 L49 80 L41 80 Z M51 71 L59 71 L59 80 L51 80 Z M42 82 L49 82 L49 92 L43 92 Z M51 82 L58 82 L57 92 L51 92 Z M34 60 C38 68 38 80 39 90 L32 78 Z M66 60 C62 68 62 80 61 90 L68 78 Z"/>
-                                <path id="svg-legs-fl" class="m-group" d="M34 118 C35 135 34 156 34 166 C39 167 45 166 46 153 C47 140 47 126 46 118 Z"/>
-                                <path id="svg-legs-fr" class="m-group" d="M66 118 C65 135 66 156 66 166 C61 167 55 166 54 153 C53 140 53 126 54 118 Z"/>
-                                <path id="svg-calves-fl" class="m-group" d="M35 170 C33 180 34 196 36 204 C39 204 41 198 42 188 C43 178 41 171 39 170 Z"/>
-                                <path id="svg-calves-fr" class="m-group" d="M65 170 C67 180 66 196 64 204 C61 204 59 198 58 188 C57 178 59 171 61 170 Z"/>
-                            </svg>
-                        </div>
+                    <!-- SCHEMA CORPOREL AUTOMATIQUE -->
+                    <div>
+                        <p style="font-size: 0.8rem; color: #72a8c8; margin-bottom: 10px; text-align: center;">
+                            * Les muscles ciblés s'éclairent automatiquement lors de la validation d'une séance et se réinitialisent chaque dimanche.
+                        </p>
+                        <div class="hevy-anatomy-container">
+                            <div style="text-align: center;">
+                                <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">FACE</div>
+                                <svg class="hevy-body-svg" viewBox="0 0 100 220">
+                                    <circle class="m-head" cx="50" cy="18" r="9"/>
+                                    <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
+                                    <path id="svg-pecs-l" class="m-group" d="M36 43 C42 43 49 45 49 57 C41 58 35 55 33 50 C33 46 34 43 36 43 Z"/>
+                                    <path id="svg-pecs-r" class="m-group" d="M64 43 C58 43 51 45 51 57 C59 58 65 55 67 50 C67 46 66 43 64 43 Z"/>
+                                    <path id="svg-shoulders-fl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
+                                    <path id="svg-shoulders-fr" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
+                                    <path id="svg-biceps-l" class="m-group" d="M26 60 C23 66 22 74 22 81 C25 82 28 80 29 74 C30 68 29 61 28 60 Z"/>
+                                    <path id="svg-biceps-r" class="m-group" d="M74 60 C77 66 78 74 78 81 C75 82 72 80 71 74 C70 68 71 61 72 60 Z"/>
+                                    <path id="svg-forearms-fl" class="m-group" d="M22 84 C20 90 19 98 21 106 C24 106 26 102 27 96 C28 90 27 85 25 84 Z"/>
+                                    <path id="svg-forearms-fr" class="m-group" d="M78 84 C80 90 81 98 79 106 C76 106 74 102 73 96 C72 90 73 85 75 84 Z"/>
+                                    <path id="svg-abs" class="m-group" d="M41 60 L49 60 L49 69 L41 69 Z M51 60 L59 60 L59 69 L51 69 Z M41 71 L49 71 L49 80 L41 80 Z M51 71 L59 71 L59 80 L51 80 Z M42 82 L49 82 L49 92 L43 92 Z M51 82 L58 82 L57 92 L51 92 Z M34 60 C38 68 38 80 39 90 L32 78 Z M66 60 C62 68 62 80 61 90 L68 78 Z"/>
+                                    <path id="svg-legs-fl" class="m-group" d="M34 118 C35 135 34 156 34 166 C39 167 45 166 46 153 C47 140 47 126 46 118 Z"/>
+                                    <path id="svg-legs-fr" class="m-group" d="M66 118 C65 135 66 156 66 166 C61 167 55 166 54 153 C53 140 53 126 54 118 Z"/>
+                                    <path id="svg-calves-fl" class="m-group" d="M35 170 C33 180 34 196 36 204 C39 204 41 198 42 188 C43 178 41 171 39 170 Z"/>
+                                    <path id="svg-calves-fr" class="m-group" d="M65 170 C67 180 66 196 64 204 C61 204 59 198 58 188 C57 178 59 171 61 170 Z"/>
+                                </svg>
+                            </div>
 
-                        <div style="text-align: center;">
-                            <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">DOS</div>
-                            <svg class="hevy-body-svg" viewBox="0 0 100 220">
-                                <circle class="m-head" cx="50" cy="18" r="9"/>
-                                <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
-                                <path id="svg-back" class="m-group" d="M41 36 L50 44 L59 36 L66 52 L60 82 L50 92 L40 82 L34 52 Z"/>
-                                <path id="svg-shoulders-bl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
-                                <path id="svg-shoulders-br" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
-                                <path id="svg-triceps-l" class="m-group" d="M25 52 C27 58 28 66 28 72 C25 73 22 71 21 65 C21 58 23 53 25 52 Z"/>
-                                <path id="svg-triceps-r" class="m-group" d="M75 52 C73 58 72 66 72 72 C75 73 78 71 79 65 C79 58 77 53 75 52 Z"/>
-                                <path id="svg-forearms-bl" class="m-group" d="M21 76 C20 84 19 95 21 105 C24 105 26 100 27 92 C28 84 26 78 24 76 Z"/>
-                                <path id="svg-forearms-br" class="m-group" d="M79 76 C80 84 81 95 79 105 C76 105 74 100 73 92 C72 84 74 78 76 76 Z"/>
-                                <path id="svg-legs-bl" class="m-group" d="M36 95 C42 95 48 97 48 111 C48 134 46 157 44 167 C39 167 35 151 35 124 C35 107 35 97 36 95 Z"/>
-                                <path id="svg-legs-br" class="m-group" d="M64 95 C58 95 52 97 52 111 C52 134 54 157 56 167 C61 167 65 151 65 124 C65 107 65 97 64 95 Z"/>
-                                <path id="svg-calves-bl" class="m-group" d="M35 170 C32 178 33 194 36 204 C39 204 42 198 43 187 C44 177 41 171 39 170 Z"/>
-                                <path id="svg-calves-br" class="m-group" d="M65 170 C68 178 67 194 64 204 C61 204 58 198 57 187 C56 177 59 171 61 170 Z"/>
-                            </svg>
+                            <div style="text-align: center;">
+                                <div style="font-family:'Orbitron'; font-size: 0.75rem; color: #8be3ff; margin-bottom: 4px;">DOS</div>
+                                <svg class="hevy-body-svg" viewBox="0 0 100 220">
+                                    <circle class="m-head" cx="50" cy="18" r="9"/>
+                                    <path class="m-base" d="M48 27 L52 27 L52 35 L48 35 Z M22 110 L25 110 L26 122 L21 122 Z M75 110 L78 110 L79 122 L74 122 Z M35 208 L44 208 L42 215 L33 215 Z M56 208 L65 208 L67 215 L58 215 Z"/>
+                                    <path id="svg-back" class="m-group" d="M41 36 L50 44 L59 36 L66 52 L60 82 L50 92 L40 82 L34 52 Z"/>
+                                    <path id="svg-shoulders-bl" class="m-group" d="M35 37 C29 38 23 43 22 50 C21 55 23 60 27 58 C28 53 30 46 35 43 Z"/>
+                                    <path id="svg-shoulders-br" class="m-group" d="M65 37 C71 38 77 43 78 50 C79 55 77 60 73 58 C72 53 70 46 65 43 Z"/>
+                                    <path id="svg-triceps-l" class="m-group" d="M25 52 C27 58 28 66 28 72 C25 73 22 71 21 65 C21 58 23 53 25 52 Z"/>
+                                    <path id="svg-triceps-r" class="m-group" d="M75 52 C73 58 72 66 72 72 C75 73 78 71 79 65 C79 58 77 53 75 52 Z"/>
+                                    <path id="svg-forearms-bl" class="m-group" d="M21 76 C20 84 19 95 21 105 C24 105 26 100 27 92 C28 84 26 78 24 76 Z"/>
+                                    <path id="svg-forearms-br" class="m-group" d="M79 76 C80 84 81 95 79 105 C76 105 74 100 73 92 C72 84 74 78 76 76 Z"/>
+                                    <path id="svg-legs-bl" class="m-group" d="M36 95 C42 95 48 97 48 111 C48 134 46 157 44 167 C39 167 35 151 35 124 C35 107 35 97 36 95 Z"/>
+                                    <path id="svg-legs-br" class="m-group" d="M64 95 C58 95 52 97 52 111 C52 134 54 157 56 167 C61 167 65 151 65 124 C65 107 65 97 64 95 Z"/>
+                                    <path id="svg-calves-bl" class="m-group" d="M35 170 C32 178 33 194 36 204 C39 204 42 198 43 187 C44 177 41 171 39 170 Z"/>
+                                    <path id="svg-calves-br" class="m-group" d="M65 170 C68 178 67 194 64 204 C61 204 58 198 57 187 C56 177 59 171 61 170 Z"/>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1004,16 +1006,6 @@
 
         let currentUser = null;
 
-        const weeklyPrograms = {
-            1: "Pec, Triceps, Épaules", 
-            2: "Dos & Biceps",          
-            3: "Jambes & Abdominaux",   
-            4: "Pec, Triceps, Épaules", 
-            5: "Dos & Biceps",          
-            6: "Repos",                 
-            0: "Repos"                  
-        };
-
         const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
         let state = {
@@ -1030,9 +1022,28 @@
             targetWeight: 80,
             targetBodyFat: 12,
             bothTargetsReached: false,
+            lastResetWeek: null,
             stats: { strength: 0, endurance: 0, muscleMass: 0, willpower: 0 },
-            musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false }
+            musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false },
+            routines: [
+                { id: 1, name: "Pecs / Triceps / Épaules", muscles: ["pecs", "triceps", "shoulders"] },
+                { id: 2, name: "Dos / Biceps", muscles: ["back", "biceps"] },
+                { id: 3, name: "Jambes / Abdominaux", muscles: ["legs", "abs"] }
+            ]
         };
+
+        function checkWeeklyReset() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const oneJan = new Date(year, 0, 1);
+            const weekNum = Math.ceil((((today - oneJan) / 86400000) + oneJan.getDay() + 1) / 7);
+
+            if (today.getDay() === 0 && state.lastResetWeek !== weekNum) {
+                state.musclesWorked = { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false };
+                state.lastResetWeek = weekNum;
+                saveUserData();
+            }
+        }
 
         function resetDefaultState() {
             state = {
@@ -1049,8 +1060,14 @@
                 targetWeight: 80,
                 targetBodyFat: 12,
                 bothTargetsReached: false,
+                lastResetWeek: null,
                 stats: { strength: 0, endurance: 0, muscleMass: 0, willpower: 0 },
-                musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false }
+                musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false },
+                routines: [
+                    { id: 1, name: "Pecs / Triceps / Épaules", muscles: ["pecs", "triceps", "shoulders"] },
+                    { id: 2, name: "Dos / Biceps", muscles: ["back", "biceps"] },
+                    { id: 3, name: "Jambes / Abdominaux", muscles: ["legs", "abs"] }
+                ]
             };
             updateUI();
         }
@@ -1151,7 +1168,7 @@
 
         async function loadUserData() {
             if (!currentUser) return;
-            const { data, error } = await supabase
+            const { data } = await supabase
                 .from('profiles')
                 .select('state_data')
                 .eq('id', currentUser.id)
@@ -1164,6 +1181,7 @@
                 await saveUserData();
                 logMessage("Nouveau profil initialisé dans le cloud.");
             }
+            checkWeeklyReset();
             updateUI();
         }
 
@@ -1195,23 +1213,7 @@
 
         function initDailyConfig() {
             const today = new Date().getDay();
-            const todayName = dayNames[today];
-            const programName = weeklyPrograms[today];
-
-            document.getElementById('today-name').innerText = todayName;
-            document.getElementById('today-program-title').innerText = programName;
-
-            const isWeekend = (today === 0 || today === 6);
-            const workoutBox = document.getElementById('workout-goal-container');
-
-            if (isWeekend) {
-                workoutBox.style.display = 'none';
-                state.workoutDone = true;
-            } else {
-                workoutBox.style.display = 'flex';
-                document.getElementById('workout-goal-label').innerText = `Séance : ${programName}`;
-            }
-
+            document.getElementById('today-name').innerText = dayNames[today];
             updateWeighWarning();
         }
 
@@ -1260,8 +1262,14 @@
             document.getElementById('workout-status').style.color = state.workoutDone ? "var(--success-green)" : "var(--neon-cyan)";
             document.getElementById('chk-workout').checked = state.workoutDone;
 
+            // Déblocage exact du bouton de réclamation des récompenses de quête
             const isReady = state.creatineDone && state.gripDone && state.steps >= 10000 && state.workoutDone && !state.questClaimed;
             document.getElementById('btn-claim-quest').disabled = !isReady;
+            if (state.questClaimed) {
+                document.getElementById('btn-claim-quest').innerText = "RÉCOMPENSES REÇUES";
+            } else {
+                document.getElementById('btn-claim-quest').innerText = "RÉCLAMER LES RÉCOMPENSES";
+            }
 
             if (state.weightHistory && state.weightHistory.length > 0) {
                 const latest = state.weightHistory[0];
@@ -1294,20 +1302,85 @@
             }
 
             renderWeightHistory();
+            renderRoutines();
             updateAnatomyDiagram();
         }
 
-        function toggleMuscle(group) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            playSound(600, 800, 0.05);
-            state.musclesWorked[group] = !state.musclesWorked[group];
-            
-            const btn = document.getElementById(`btn-m-${group}`);
-            if (state.musclesWorked[group]) btn.classList.add('active');
-            else btn.classList.remove('active');
+        // CREER UNE SEANCE CUSTOM
+        function createCustomRoutine(e) {
+            e.preventDefault();
+            const name = document.getElementById('routine-name-input').value.trim();
+            const checkboxes = document.querySelectorAll('.chk-m:checked');
+            const selectedMuscles = Array.from(checkboxes).map(cb => cb.value);
 
-            updateAnatomyDiagram();
+            if (!name || selectedMuscles.length === 0) {
+                alert("Veuillez entrer un nom et choisir au moins un muscle.");
+                return;
+            }
+
+            const newRoutine = {
+                id: Date.now(),
+                name: name,
+                muscles: selectedMuscles
+            };
+
+            if (!state.routines) state.routines = [];
+            state.routines.push(newRoutine);
+
+            document.getElementById('routine-name-input').value = '';
+            checkboxes.forEach(cb => cb.checked = false);
+
+            logMessage(`Séance "${name}" créée.`);
             saveUserData();
+            updateUI();
+        }
+
+        function deleteRoutine(id) {
+            state.routines = state.routines.filter(r => r.id !== id);
+            saveUserData();
+            updateUI();
+        }
+
+        function validateRoutine(routineId) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            playSound(600, 1000, 0.1);
+
+            const routine = state.routines.find(r => r.id === routineId);
+            if (!routine) return;
+
+            routine.muscles.forEach(m => {
+                state.musclesWorked[m] = true;
+            });
+
+            state.workoutDone = true;
+            state.stats.strength += 1;
+
+            logMessage(`Séance "${routine.name}" effectuée ! Muscles illuminés et +1 Force.`);
+            saveUserData();
+            updateUI();
+        }
+
+        function renderRoutines() {
+            const list = document.getElementById('routines-list');
+            if (!state.routines || state.routines.length === 0) {
+                list.innerHTML = `<div style="color: #72a8c8; font-size: 0.85rem;">Aucune séance créée.</div>`;
+                return;
+            }
+
+            list.innerHTML = state.routines.map(r => `
+                <div class="routine-card">
+                    <div>
+                        <strong style="color: #fff; font-family:'Orbitron'; font-size: 0.85rem;">${r.name}</strong>
+                        <div style="font-size: 0.75rem; color: var(--neon-cyan); margin-top:2px;">
+                            ${r.muscles.join(', ')}
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-quest-action" onclick="validateRoutine(${r.id})">Valider</button>
+                        <button class="btn-quest-action" style="border-color: var(--danger-red); color:#ff99b3;" onclick="deleteRoutine(${r.id})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function updateAnatomyDiagram() {
@@ -1520,18 +1593,15 @@
             document.querySelectorAll('.nav-btn')[btnMap[tabId]].classList.add('active');
         }
 
-        // CHARGEMENT INITIAL : VÉRIFICATION DE LA SESSION SUPABASE
         window.onload = async () => {
             initDailyConfig();
             
             const { data } = await supabase.auth.getSession();
             if (data && data.session) {
-                // Session active trouvée : l'utilisateur reste connecté
                 currentUser = data.session.user;
                 document.getElementById('auth-screen').style.display = 'none';
                 await loadUserData();
             } else {
-                // Pas de session : obligation de se connecter
                 currentUser = null;
                 resetDefaultState();
                 document.getElementById('auth-screen').style.display = 'flex';
