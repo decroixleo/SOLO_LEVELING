@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Interface Système - Solo Leveling Musculation</title>
+    <title>SoloFlexing</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,372 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
+
+    <style>
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-cyan: #00d2ff;
+            --hevy-blue: #0095ff;
+            --dark-blue: #020b18;
+            --panel-bg: rgba(4, 18, 38, 0.92);
+            --panel-border: #00a8ff;
+            --accent-glow: rgba(0, 240, 255, 0.4);
+            --gold: #ffd700;
+            --text-glow: 0 0 8px rgba(0, 240, 255, 0.6);
+            --danger-red: #ff3366;
+            --success-green: #10b981;
+            --muscle-base: #a0acba;
+            --muscle-body-bg: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #01060e;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 80, 160, 0.15) 0%, transparent 80%),
+                linear-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 210, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            color: #d1f4ff;
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 99;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .system-glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 95vw; height: 95vh;
+            background: radial-gradient(ellipse at center, rgba(0, 150, 255, 0.1) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .system-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .auth-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(1, 6, 14, 0.98);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 500;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .auth-box {
+            background: var(--panel-bg);
+            border: 2px solid var(--neon-blue);
+            padding: 25px 20px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 0 30px var(--accent-glow);
+            text-align: center;
+        }
+
+        .auth-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-shadow: var(--text-glow);
+        }
+
+        .auth-section-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            font-size: 0.85rem;
+            margin: 15px 0 10px 0;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 4px;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 12px 15px;
+            box-shadow: 0 0 15px var(--accent-glow);
+            backdrop-filter: blur(8px);
+        }
+
+        @media (min-width: 768px) {
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 25px;
+                clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+            }
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .system-icon {
+            font-size: 1.5rem;
+            color: var(--neon-blue);
+            text-shadow: var(--text-glow);
+            animation: pulse 2s infinite alternate;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            color: #fff;
+            text-shadow: var(--text-glow);
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 1.2rem; text-align: left; }
+        }
+
+        nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            nav {
+                display: flex;
+                width: auto;
+                gap: 8px;
+            }
+        }
+
+        .nav-btn {
+            background: rgba(0, 40, 80, 0.5);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            color: #8be3ff;
+            padding: 10px 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .nav-btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+                clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            }
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 210, 255, 0.2);
+            border-color: var(--neon-blue);
+            color: #fff;
+        }
+
+        .nav-btn.active {
+            background: var(--neon-blue);
+            color: var(--dark-blue);
+            border-color: #fff;
+            box-shadow: 0 0 12px var(--neon-blue);
+            font-weight: 800;
+        }
+
+        .btn-logout {
+            background: rgba(255, 51, 102, 0.2);
+            border: 1px solid var(--danger-red);
+            color: #ff99b3;
+            padding: 8px 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .system-frame {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            min-height: 480px;
+            padding: 15px;
+            box-shadow: 0 0 25px rgba(0, 150, 255, 0.25);
+            backdrop-filter: blur(10px);
+        }
+
+        @media (min-width: 768px) {
+            .system-frame {
+                padding: 25px;
+                clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            }
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .grid-2col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2col {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+        }
+
+        .section-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            color: var(--neon-cyan);
+            border-bottom: 1px solid rgba(0, 210, 255, 0.3);
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .section-header { font-size: 1.1rem; }
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+        }
+
+        .label { color: #72a8c8; font-weight: 600; }
+        .val { font-family: 'Orbitron', sans-serif; font-weight: 700; color: #fff; }
+
+        .bar-container { margin-top: 15px; }
+        .bar-info { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; font-family: 'Orbitron'; }
+        .bar-outer {
+            width: 100%; height: 14px;
+            background: rgba(0, 20, 40, 0.8);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            padding: 1px;
+        }
+        .bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, #7209b7, #00f0ff);
+            box-shadow: 0 0 10px var(--neon-blue);
+            transition: width 0.4s ease;
+        }
+
+        .quest-box {
+            border: 1px solid var(--neon-cyan);
+            background: rgba(0, 15, 30, 0.6);
+            padding: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .quest-box { padding: 20px; }
+        }
+
+        .quest-goals {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .goal-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(0, 30, 60, 0.4);
+            padding: 12px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+        }
+
+        @media (min-width: 576px) {
+            .goal-item {
+                display: grid;
+                grid-template-columns: 1.8fr 1fr auto;
+                align-items: center;
+            }
+        }
+
+        .goal-name { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .goal-progress { font-family: 'Orbitron', sans-serif; font-size: 1remLe problème vient de la manière dont la requête de recherche est rédigée dans le code JavaScript : elle utilise la fonction de recherche exacte `.eq('username', friendUsername)` qui **est sensible à la casse** (majuscules/minuscules) et qui échoue si les profils n'ont pas encore leur pseudo enregistré dans la colonne dédiée.
+
+Voici le code mis à jour. Il utilise `.ilike()` pour ignorer la casse des majuscules/minuscules lors de la recherche d'amis.
+
+Remplace tout le contenu de ton fichier `index.html` par cette version :
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Interface Système - Solo Leveling Musculation</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap)" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+    <!-- Supabase JS Library -->
+    <script src="[https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js](https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js)"></script>
 
     <style>
         :root {
@@ -410,7 +776,7 @@
         }
 
         @media (min-width: 576px) {
-            aria-warning-banner {
+            .warning-banner {
                 flex-direction: row;
                 justify-content: space-between;
                 text-align: left;
@@ -610,7 +976,6 @@
             border-color: #666;
         }
 
-        /* MODALES ET OVERLAYS FIXÉS */
         .modal-overlay, .level-up-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -799,7 +1164,7 @@
                             <form onsubmit="addFriendByUsername(event)">
                                 <div class="form-group">
                                     <label>Pseudo de l'Ami</label>
-                                    <input type="text" id="friend-username-input" class="form-control" placeholder="ex: Sung_Jin_Woo" required>
+                                    <input type="text" id="friend-username-input" class="form-control" placeholder="ex: CodeSmock ou GuyomS" required>
                                 </div>
                                 <button type="submit" class="btn-quest-action" style="width: 100%;">+ Envoyer / Ajouter</button>
                             </form>
@@ -1189,7 +1554,7 @@
     </div>
 
     <script>
-        const SUPABASE_URL = "https://kfvxenifwivauulzprbk.supabase.co";
+        const SUPABASE_URL = "[https://kfvxenifwivauulzprbk.supabase.co](https://kfvxenifwivauulzprbk.supabase.co)";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmdnhlbmlmd2l2YXV1bHpwcmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5Mjc0NTUsImV4cCI6MjEwODUwMzQ1NX0.0D6D41QDKjnDaNHB_unD8QxJGKTebFsH3W-01nSKN3A";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -1372,12 +1737,13 @@
             if (!currentUser) return;
             const { data } = await supabase
                 .from('profiles')
-                .select('state_data')
+                .select('username, state_data')
                 .eq('id', currentUser.id)
                 .single();
 
             if (data && data.state_data) {
                 state = { ...state, ...data.state_data };
+                if (data.username) state.username = data.username;
                 logMessage("Données du joueur chargées depuis le cloud.");
             } else {
                 await saveUserData();
@@ -1422,7 +1788,7 @@
             const { data } = await supabase
                 .from('profiles')
                 .select('id')
-                .eq('username', val);
+                .ilike('username', val);
 
             if (data && data.length > 0 && data[0].id !== currentUser.id) {
                 alert("Ce pseudo est déjà utilisé par un autre joueur. Veuillez en choisir un autre !");
@@ -1454,44 +1820,62 @@
             const friendUsername = document.getElementById('friend-username-input').value.trim();
             if (!friendUsername) return;
 
-            if (friendUsername === state.username) {
+            if (friendUsername.toLowerCase() === state.username.toLowerCase()) {
                 alert("Vous ne pouvez pas vous ajouter vous-même en ami !");
                 return;
             }
 
-            const { data } = await supabase
+            // 1. Recherche insensible à la casse dans la colonne "username"
+            let { data } = await supabase
                 .from('profiles')
-                .select('username')
-                .eq('username', friendUsername);
+                .select('username, state_data')
+                .ilike('username', friendUsername);
+
+            // 2. Recherche secours dans les données JSON si le pseudo n'était pas dans la colonne
+            if (!data || data.length === 0) {
+                const { data: allProfiles } = await supabase.from('profiles').select('username, state_data');
+                if (allProfiles) {
+                    data = allProfiles.filter(p => p.state_data && p.state_data.username && p.state_data.username.toLowerCase() === friendUsername.toLowerCase());
+                }
+            }
 
             if (!data || data.length === 0) {
-                alert("Aucun joueur trouvé avec ce pseudo !");
+                alert("Aucun joueur trouvé avec ce pseudo ! Assurez-vous que l'autre joueur s'est bien connecté et a enregistré son pseudo.");
                 return;
             }
 
+            const targetUser = data[0].username || data[0].state_data.username;
+
             if (!state.friends) state.friends = [];
-            if (state.friends.includes(friendUsername)) {
+            if (state.friends.some(f => f.toLowerCase() === targetUser.toLowerCase())) {
                 alert("Ce joueur est déjà dans votre liste d'amis.");
                 return;
             }
 
-            state.friends.push(friendUsername);
+            state.friends.push(targetUser);
             document.getElementById('friend-username-input').value = "";
             saveUserData();
             updateUI();
-            logMessage(`Ami ajouté : ${friendUsername}`);
+            logMessage(`Ami ajouté : ${targetUser}`);
         }
 
         async function viewFriendProfile(friendUsername) {
-            const { data } = await supabase
+            let { data } = await supabase
                 .from('profiles')
-                .select('state_data')
-                .eq('username', friendUsername)
-                .single();
+                .select('username, state_data')
+                .ilike('username', friendUsername)
+                .maybeSingle();
+
+            if (!data) {
+                const { data: allProfiles } = await supabase.from('profiles').select('username, state_data');
+                if (allProfiles) {
+                    data = allProfiles.find(p => p.state_data && p.state_data.username && p.state_data.username.toLowerCase() === friendUsername.toLowerCase());
+                }
+            }
 
             if (data && data.state_data) {
                 const fState = data.state_data;
-                document.getElementById('friend-modal-username').innerText = fState.username || friendUsername;
+                document.getElementById('friend-modal-username').innerText = data.username || fState.username || friendUsername;
                 document.getElementById('friend-modal-rank').innerText = getRank(fState.level || 1);
                 document.getElementById('friend-modal-level').innerText = fState.level || 1;
 
@@ -1519,7 +1903,7 @@
 
         function removeFriend(friendUsername, e) {
             e.stopPropagation();
-            state.friends = state.friends.filter(f => f !== friendUsername);
+            state.friends = state.friends.filter(f => f.toLowerCase() !== friendUsername.toLowerCase());
             saveUserData();
             updateUI();
             logMessage(`Ami retiré : ${friendUsername}`);
