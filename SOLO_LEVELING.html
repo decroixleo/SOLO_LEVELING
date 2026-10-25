@@ -490,7 +490,7 @@
             border: 1px solid rgba(0, 210, 255, 0.2);
         }
 
-        .routine-card {
+        .routine-card, .friend-card {
             background: rgba(0, 30, 60, 0.5);
             border: 1px solid rgba(0, 210, 255, 0.3);
             padding: 10px;
@@ -500,7 +500,16 @@
             align-items: center;
         }
 
-        /* STYLES DESKTOP & PHOTO DE PROFIL */
+        .friend-card {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .friend-card:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 50, 100, 0.6);
+        }
+
         .avatar-container {
             display: flex;
             flex-direction: column;
@@ -510,8 +519,8 @@
         }
 
         .avatar-frame {
-            width: 120px;
-            height: 120px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             border: 3px solid var(--neon-blue);
             box-shadow: 0 0 20px var(--neon-blue);
@@ -520,7 +529,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 3rem;
+            font-size: 2.8rem;
             color: var(--neon-cyan);
             overflow: hidden;
         }
@@ -601,30 +610,31 @@
             border-color: #666;
         }
 
-        .level-up-overlay {
+        /* MODALES ET OVERLAYS */
+        .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 11, 24, 0.88);
+            background: rgba(2, 11, 24, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.4s ease;
-            padding: 20px;
+            transition: opacity 0.3s ease;
+            padding: 15px;
         }
 
-        .level-up-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
 
-        .level-up-box {
+        .modal-box {
             border: 2px solid var(--neon-blue);
             background: rgba(4, 25, 50, 0.95);
-            padding: 30px 25px;
-            text-align: center;
-            box-shadow: 0 0 40px var(--neon-blue);
+            padding: 20px;
+            box-shadow: 0 0 30px var(--neon-blue);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            text-align: center;
         }
 
         @keyframes pulse { 0% { opacity: 0.7; } 100% { opacity: 1; text-shadow: 0 0 15px var(--neon-blue); } }
@@ -682,6 +692,9 @@
                 <button class="nav-btn active" onclick="switchTab('profile')">
                     <i class="fa-solid fa-user-gear"></i> Profil
                 </button>
+                <button class="nav-btn" onclick="switchTab('friends')">
+                    <i class="fa-solid fa-users"></i> Amis
+                </button>
                 <button class="nav-btn" onclick="switchTab('status')">
                     <i class="fa-solid fa-user"></i> Statut
                 </button>
@@ -709,7 +722,6 @@
 
                 <div class="grid-2col">
                     <div>
-                        <!-- Carte Identité du Joueur -->
                         <div class="avatar-container">
                             <div class="avatar-frame" id="avatar-display">
                                 <i class="fa-solid fa-user"></i>
@@ -722,10 +734,10 @@
 
                         <form onsubmit="saveProfileInfo(event)" style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
                             <div class="form-group">
-                                <label>Pseudo du Joueur</label>
-                                <input type="text" class="form-control" id="profile-username-input" placeholder="ex: Sung Jin-Woo" required>
+                                <label>Pseudo Unique du Joueur</label>
+                                <input type="text" class="form-control" id="profile-username-input" placeholder="ex: Sung_Jin_Woo" required>
                             </div>
-                            <button type="submit" class="btn-quest-action" style="width: 100%;">Mettre à jour le Pseudo</button>
+                            <button type="submit" class="btn-quest-action" style="width: 100%;">Enregistrer le Pseudo</button>
                         </form>
 
                         <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
@@ -745,14 +757,13 @@
                     </div>
 
                     <div>
-                        <!-- Récapitulatif Général des Séances et du Poids -->
                         <div class="section-header" style="font-size: 0.9rem;">
                             <span>Vue d'ensemble du Chasseur</span>
                             <i class="fa-solid fa-chart-line"></i>
                         </div>
 
                         <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
-                            <h4 style="font-family: 'Orbitron'; font-size: 0.85rem; color: var(--gold); margin-bottom: 8px;">Programme Hebdomadaire (${state.routines.length} séances) :</h4>
+                            <h4 style="font-family: 'Orbitron'; font-size: 0.85rem; color: var(--gold); margin-bottom: 8px;">Programme Hebdomadaire :</h4>
                             <div id="profile-routines-summary"></div>
                         </div>
 
@@ -770,6 +781,36 @@
                                 <span class="label">Objectif Cible :</span>
                                 <span class="val" id="profile-target-display">-- kg / --% MG</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET AMIS -->
+            <div id="tab-friends" class="tab-content">
+                <div class="section-header">
+                    <span>Réseau de Chasseurs & Liste d'Amis</span>
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <div class="grid-2col">
+                    <div>
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: var(--gold); margin-bottom: 10px;">Ajouter un Ami</h3>
+                            <form onsubmit="addFriendByUsername(event)">
+                                <div class="form-group">
+                                    <label>Pseudo de l'Ami</label>
+                                    <input type="text" id="friend-username-input" class="form-control" placeholder="ex: Sung_Jin_Woo" required>
+                                </div>
+                                <button type="submit" class="btn-quest-action" style="width: 100%;">+ Envoyer / Ajouter</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
+                            <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: #fff; margin-bottom: 10px;">Mes Amis</h3>
+                            <div id="friends-list"></div>
                         </div>
                     </div>
                 </div>
@@ -894,10 +935,11 @@
                             </div>
                         </div>
 
+                        <!-- LA SÉANCE DU JOUR (SE MASQUE S'IL N'Y EN A PAS) -->
                         <div class="goal-item" id="workout-goal-container">
                             <div class="goal-name">
                                 <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
-                                <span id="workout-goal-label">Séance : Repos / Libre</span>
+                                <span id="workout-goal-label">Séance du jour</span>
                             </div>
                             <div class="goal-progress" id="workout-status">À effectuer</div>
                             <div style="align-self: flex-end;">
@@ -929,7 +971,6 @@
 
                 <div class="grid-2col">
                     <div>
-                        <!-- FORMULAIRE DE CRÉATION / MODIFICATION DE SÉANCE -->
                         <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px; margin-bottom: 12px;">
                             <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: var(--gold); margin-bottom: 10px;" id="routine-form-title">Créer une Nouvelle Séance</h3>
                             <form onsubmit="saveCustomRoutine(event)">
@@ -967,14 +1008,12 @@
                             </form>
                         </div>
 
-                        <!-- LISTE DES SÉANCES CRÉÉES -->
                         <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 12px;">
                             <h3 style="font-family:'Orbitron'; font-size: 0.9rem; color: #fff; margin-bottom: 8px;">Mes Séances</h3>
                             <div id="routines-list"></div>
                         </div>
                     </div>
 
-                    <!-- SCHEMA CORPOREL AUTOMATIQUE -->
                     <div>
                         <p style="font-size: 0.8rem; color: #72a8c8; margin-bottom: 10px; text-align: center;">
                             * Les muscles de la séance validée dans vos quêtes s'éclairent automatiquement et se réinitialisent le dimanche à 23h59.
@@ -1113,6 +1152,29 @@
         </footer>
     </div>
 
+    <!-- MODALE FICHE AMI -->
+    <div class="modal-overlay" id="friend-profile-modal">
+        <div class="modal-box">
+            <div class="avatar-container">
+                <div class="avatar-frame" id="friend-modal-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
+            <h2 style="font-family: 'Orbitron'; color: var(--neon-blue); font-size: 1.3rem;" id="friend-modal-username">Joueur</h2>
+            <div style="font-family: 'Orbitron'; color: var(--gold); font-size: 0.9rem; margin-bottom: 12px;" id="friend-modal-rank">Rang E</div>
+            
+            <div style="background: rgba(0,20,40,0.6); border: 1px solid rgba(0,210,255,0.3); padding: 10px; margin-bottom: 15px; text-align: left;">
+                <div class="info-row"><span class="label">Niveau :</span><span class="val" id="friend-modal-level">1</span></div>
+                <div class="info-row"><span class="label">Force :</span><span class="val" id="friend-modal-str">0</span></div>
+                <div class="info-row"><span class="label">Endurance :</span><span class="val" id="friend-modal-end">0</span></div>
+                <div class="info-row"><span class="label">Masse Musculaire :</span><span class="val" id="friend-modal-mass">0</span></div>
+                <div class="info-row"><span class="label">Volonté :</span><span class="val" id="friend-modal-will">0</span></div>
+            </div>
+
+            <button class="btn-action" onclick="closeFriendModal()">FERMER</button>
+        </div>
+    </div>
+
     <div class="level-up-overlay" id="level-up-modal">
         <div class="level-up-box">
             <h2 style="font-family: 'Orbitron'; font-size: 2rem; color: #fff; text-shadow: 0 0 20px var(--neon-blue); margin-bottom: 8px;">LEVEL UP !</h2>
@@ -1153,6 +1215,7 @@
             targetBodyFat: 12,
             bothTargetsReached: false,
             lastResetWeek: null,
+            friends: [], // Liste des pseudos des amis
             stats: { strength: 0, endurance: 0, muscleMass: 0, willpower: 0 },
             musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false },
             routines: [
@@ -1194,6 +1257,7 @@
                 targetBodyFat: 12,
                 bothTargetsReached: false,
                 lastResetWeek: null,
+                friends: [],
                 stats: { strength: 0, endurance: 0, muscleMass: 0, willpower: 0 },
                 musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false },
                 routines: [
@@ -1296,7 +1360,12 @@
             if (!currentUser) return;
             const { error } = await supabase
                 .from('profiles')
-                .upsert({ id: currentUser.id, state_data: state, updated_at: new Date() });
+                .upsert({ 
+                    id: currentUser.id, 
+                    username: state.username, 
+                    state_data: state, 
+                    updated_at: new Date() 
+                });
             if (error) console.error("Erreur sauvegarde :", error);
         }
 
@@ -1346,15 +1415,26 @@
             } catch(e) {}
         }
 
-        function saveProfileInfo(e) {
+        async function saveProfileInfo(e) {
             e.preventDefault();
             const val = document.getElementById('profile-username-input').value.trim();
-            if (val) {
-                state.username = val;
-                saveUserData();
-                updateUI();
-                logMessage(`Pseudo mis à jour : ${state.username}`);
+            if (!val) return;
+
+            // Vérification si le pseudo est déjà pris par un autre utilisateur
+            const { data } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('username', val);
+
+            if (data && data.length > 0 && data[0].id !== currentUser.id) {
+                alert("Ce pseudo est déjà utilisé par un autre joueur. Veuillez en choisir un autre !");
+                return;
             }
+
+            state.username = val;
+            await saveUserData();
+            updateUI();
+            logMessage(`Pseudo mis à jour : ${state.username}`);
         }
 
         function uploadAvatar(event) {
@@ -1371,6 +1451,83 @@
             }
         }
 
+        async function addFriendByUsername(e) {
+            e.preventDefault();
+            const friendUsername = document.getElementById('friend-username-input').value.trim();
+            if (!friendUsername) return;
+
+            if (friendUsername === state.username) {
+                alert("Vous ne pouvez pas vous ajouter vous-même en ami !");
+                return;
+            }
+
+            // Vérifier existence du joueur dans Supabase
+            const { data } = await supabase
+                .from('profiles')
+                .select('username')
+                .eq('username', friendUsername);
+
+            if (!data || data.length === 0) {
+                alert("Aucun joueur trouvé avec ce pseudo !");
+                return;
+            }
+
+            if (!state.friends) state.friends = [];
+            if (state.friends.includes(friendUsername)) {
+                alert("Ce joueur est déjà dans votre liste d'amis.");
+                return;
+            }
+
+            state.friends.push(friendUsername);
+            document.getElementById('friend-username-input').value = "";
+            saveUserData();
+            updateUI();
+            logMessage(`Ami ajouté : ${friendUsername}`);
+        }
+
+        async function viewFriendProfile(friendUsername) {
+            const { data } = await supabase
+                .from('profiles')
+                .select('state_data')
+                .eq('username', friendUsername)
+                .single();
+
+            if (data && data.state_data) {
+                const fState = data.state_data;
+                document.getElementById('friend-modal-username').innerText = fState.username || friendUsername;
+                document.getElementById('friend-modal-rank').innerText = getRank(fState.level || 1);
+                document.getElementById('friend-modal-level').innerText = fState.level || 1;
+
+                const avatarEl = document.getElementById('friend-modal-avatar');
+                if (fState.avatarUrl) {
+                    avatarEl.innerHTML = `<img src="${fState.avatarUrl}">`;
+                } else {
+                    avatarEl.innerHTML = `<i class="fa-solid fa-user"></i>`;
+                }
+
+                document.getElementById('friend-modal-str').innerText = fState.stats?.strength || 0;
+                document.getElementById('friend-modal-end').innerText = fState.stats?.endurance || 0;
+                document.getElementById('friend-modal-mass').innerText = fState.stats?.muscleMass || 0;
+                document.getElementById('friend-modal-will').innerText = fState.stats?.willpower || 0;
+
+                document.getElementById('friend-profile-modal').classList.add('show');
+            } else {
+                alert("Impossible de charger le profil de cet ami.");
+            }
+        }
+
+        function closeFriendModal() {
+            document.getElementById('friend-profile-modal').classList.remove('show');
+        }
+
+        function removeFriend(friendUsername, e) {
+            e.stopPropagation();
+            state.friends = state.friends.filter(f => f !== friendUsername);
+            saveUserData();
+            updateUI();
+            logMessage(`Ami retiré : ${friendUsername}`);
+        }
+
         function getTodayRoutine() {
             const today = new Date().getDay();
             if (!state.routines) return null;
@@ -1382,12 +1539,15 @@
             document.getElementById('today-name').innerText = dayNames[today];
 
             const todayRoutine = getTodayRoutine();
+            const workoutContainer = document.getElementById('workout-goal-container');
             const workoutLabel = document.getElementById('workout-goal-label');
 
             if (todayRoutine) {
+                workoutContainer.style.display = "grid";
                 workoutLabel.innerText = `Séance : ${todayRoutine.name}`;
             } else {
-                workoutLabel.innerText = "Séance : Repos / Libre";
+                // Masquer la séance si aucun entraînement n'est prévu aujourd'hui
+                workoutContainer.style.display = "none";
             }
 
             updateWeighWarning();
@@ -1412,7 +1572,7 @@
         }
 
         function updateUI() {
-            // Mise à jour de l'onglet Profil
+            // Profil
             document.getElementById('profile-username-input').value = state.username || "Chasseur";
             document.getElementById('profile-username-display').innerText = state.username || "Chasseur";
             document.getElementById('profile-level-display').innerText = state.level;
@@ -1425,7 +1585,7 @@
                 avatarDisplay.innerHTML = `<i class="fa-solid fa-user"></i>`;
             }
 
-            // Récapitulatif séances dans Profil
+            // Récapitulatif Séances
             const routinesSummary = document.getElementById('profile-routines-summary');
             if (state.routines && state.routines.length > 0) {
                 routinesSummary.innerHTML = state.routines.map(r => {
@@ -1434,6 +1594,22 @@
                 }).join('');
             } else {
                 routinesSummary.innerHTML = `<div style="font-size:0.8rem; color:#72a8c8;">Aucune séance configurée</div>`;
+            }
+
+            // Liste d'Amis
+            const friendsList = document.getElementById('friends-list');
+            if (state.friends && state.friends.length > 0) {
+                friendsList.innerHTML = state.friends.map(f => `
+                    <div class="friend-card" onclick="viewFriendProfile('${f}')">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-user-ninja" style="color:var(--neon-blue);"></i>
+                            <strong style="color:#fff; font-family:'Orbitron'; font-size:0.85rem;">${f}</strong>
+                        </div>
+                        <button class="btn-quest-action" style="border-color:var(--danger-red); color:#ff99b3;" onclick="removeFriend('${f}', event)"><i class="fa-solid fa-user-minus"></i></button>
+                    </div>
+                `).join('');
+            } else {
+                friendsList.innerHTML = `<div style="color: #72a8c8; font-size: 0.85rem;">Aucun ami ajouté.</div>`;
             }
 
             // Statut Général
@@ -1463,7 +1639,10 @@
             document.getElementById('workout-status').style.color = state.workoutDone ? "var(--success-green)" : "var(--neon-cyan)";
             document.getElementById('chk-workout').checked = state.workoutDone;
 
-            const isReady = state.creatineDone && state.gripDone && state.steps >= 10000 && state.workoutDone && !state.questClaimed;
+            const todayRoutine = getTodayRoutine();
+            const workoutValid = todayRoutine ? state.workoutDone : true; // Si pas de séance, la quête ne bloque pas la validation
+
+            const isReady = state.creatineDone && state.gripDone && state.steps >= 10000 && workoutValid && !state.questClaimed;
             document.getElementById('btn-claim-quest').disabled = !isReady;
             if (state.questClaimed) {
                 document.getElementById('btn-claim-quest').innerText = "RÉCOMPENSES REÇUES";
@@ -1842,7 +2021,7 @@
 
             document.getElementById(`tab-${tabId}`).classList.add('active');
             
-            const btnMap = { profile: 0, status: 1, quest: 2, workout: 3, weighin: 4 };
+            const btnMap = { profile: 0, friends: 1, status: 2, quest: 3, workout: 4, weighin: 5 };
             document.querySelectorAll('.nav-btn')[btnMap[tabId]].classList.add('active');
         }
 
