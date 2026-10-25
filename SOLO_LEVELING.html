@@ -695,7 +695,19 @@
                             </div>
                         </div>
 
-                        <!-- Goal 3: Daily Workout Session -->
+                        <!-- Goal 3: Grip Strength (Presse-poignée) -->
+                        <div class="goal-item">
+                            <div class="goal-name">
+                                <i class="fa-solid fa-hand-fist" style="color: #a855f7;"></i>
+                                Presse-poignée (3x30 rep / main)
+                            </div>
+                            <div class="goal-progress" id="grip-status">Non fait</div>
+                            <div style="align-self: flex-end;">
+                                <input type="checkbox" class="custom-checkbox" id="chk-grip" onchange="toggleGrip()">
+                            </div>
+                        </div>
+
+                        <!-- Goal 4: Daily Workout Session -->
                         <div class="goal-item" id="workout-goal-container">
                             <div class="goal-name">
                                 <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
@@ -967,6 +979,7 @@
             exp: 0,
             maxExp: 100,
             creatineDone: false,
+            gripDone: false,
             steps: 0,
             workoutDone: false,
             questClaimed: false,
@@ -1077,6 +1090,10 @@
             document.getElementById('creatine-status').style.color = state.creatineDone ? "var(--success-green)" : "var(--neon-cyan)";
             document.getElementById('chk-creatine').checked = state.creatineDone;
 
+            document.getElementById('grip-status').innerText = state.gripDone ? "Validé" : "Non fait";
+            document.getElementById('grip-status').style.color = state.gripDone ? "var(--success-green)" : "var(--neon-cyan)";
+            document.getElementById('chk-grip').checked = state.gripDone;
+
             document.getElementById('steps-count').innerText = `${state.steps.toLocaleString()} / 10k`;
             document.getElementById('steps-count').style.color = state.steps >= 10000 ? "var(--success-green)" : "var(--neon-cyan)";
 
@@ -1084,7 +1101,7 @@
             document.getElementById('workout-status').style.color = state.workoutDone ? "var(--success-green)" : "var(--neon-cyan)";
             document.getElementById('chk-workout').checked = state.workoutDone;
 
-            const isReady = state.creatineDone && state.steps >= 10000 && state.workoutDone && !state.questClaimed;
+            const isReady = state.creatineDone && state.gripDone && state.steps >= 10000 && state.workoutDone && !state.questClaimed;
             document.getElementById('btn-claim-quest').disabled = !isReady;
 
             // Weight & Goal Progress
@@ -1172,6 +1189,13 @@
             if (audioCtx.state === 'suspended') audioCtx.resume();
             playSound(600, 800, 0.05);
             state.creatineDone = document.getElementById('chk-creatine').checked;
+            updateUI();
+        }
+
+        function toggleGrip() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            playSound(600, 800, 0.05);
+            state.gripDone = document.getElementById('chk-grip').checked;
             updateUI();
         }
 
