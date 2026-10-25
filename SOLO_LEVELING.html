@@ -814,7 +814,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET STATUT (ACTIF PAR DÉFAUT) -->
+            <!-- ONGLET STATUT -->
             <div id="tab-status" class="tab-content active">
                 <div class="grid-2col">
                     <div>
@@ -1376,18 +1376,30 @@
                     id: currentUser.id, 
                     username: state.username, 
                     state_data: state, 
-                    updated_at: new Date() 
-                });
-            if (error) console.error("Erreur sauvegarde :", error);
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'id' });
+
+            if (error) {
+                console.error("Erreur de sauvegarde Cloud :", error);
+                logMessage("⚠️ Erreur de sauvegarde cloud : " + error.message);
+            } else {
+                logMessage("Données du joueur synchronisées avec le cloud.");
+            }
         }
 
         async function loadUserData() {
             if (!currentUser) return;
-            const { data } = await supabase
+            const { data, error } = await supabase
                 .from('profiles')
                 .select('username, state_data')
                 .eq('id', currentUser.id)
-                .single();
+                .maybeSingle();
+
+            if (error) {
+                console.error("Erreur de chargement :", error);
+                logMessage("⚠️ Erreur au chargement des données.");
+                return;
+            }
 
             if (data && data.state_data) {
                 state = { ...state, ...data.state_data };
