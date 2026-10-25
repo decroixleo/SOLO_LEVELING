@@ -410,7 +410,7 @@
         }
 
         @media (min-width: 576px) {
-            .warning-banner {
+            aria-warning-banner {
                 flex-direction: row;
                 justify-content: space-between;
                 text-align: left;
@@ -610,28 +610,27 @@
             border-color: #666;
         }
 
-        /* MODALES ET OVERLAYS */
-        .modal-overlay {
+        /* MODALES ET OVERLAYS FIXÉS */
+        .modal-overlay, .level-up-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 11, 24, 0.9);
-            display: flex;
+            background: rgba(2, 11, 24, 0.92);
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
             padding: 15px;
         }
 
-        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-overlay.show, .level-up-overlay.show { 
+            display: flex !important; 
+        }
 
-        .modal-box {
+        .modal-box, .level-up-box {
             border: 2px solid var(--neon-blue);
-            background: rgba(4, 25, 50, 0.95);
-            padding: 20px;
-            box-shadow: 0 0 30px var(--neon-blue);
+            background: rgba(4, 25, 50, 0.98);
+            padding: 25px;
+            box-shadow: 0 0 35px var(--neon-blue);
             width: 100%;
             max-width: 420px;
             text-align: center;
@@ -689,13 +688,13 @@
                 <h1>Système // Programme Entraînement</h1>
             </div>
             <nav>
-                <button class="nav-btn active" onclick="switchTab('profile')">
+                <button class="nav-btn" onclick="switchTab('profile')">
                     <i class="fa-solid fa-user-gear"></i> Profil
                 </button>
                 <button class="nav-btn" onclick="switchTab('friends')">
                     <i class="fa-solid fa-users"></i> Amis
                 </button>
-                <button class="nav-btn" onclick="switchTab('status')">
+                <button class="nav-btn active" onclick="switchTab('status')">
                     <i class="fa-solid fa-user"></i> Statut
                 </button>
                 <button class="nav-btn" onclick="switchTab('quest')">
@@ -713,8 +712,8 @@
 
         <main class="system-frame">
 
-            <!-- ONGLET PROFIL DÉTAILLÉ -->
-            <div id="tab-profile" class="tab-content active">
+            <!-- ONGLET PROFIL -->
+            <div id="tab-profile" class="tab-content">
                 <div class="section-header">
                     <span>Profil Joueur & Récapitulatif Général</span>
                     <i class="fa-solid fa-id-card"></i>
@@ -816,8 +815,8 @@
                 </div>
             </div>
 
-            <!-- ONGLET STATUT -->
-            <div id="tab-status" class="tab-content">
+            <!-- ONGLET STATUT (ACTIF PAR DÉFAUT) -->
+            <div id="tab-status" class="tab-content active">
                 <div class="grid-2col">
                     <div>
                         <div class="section-header">
@@ -935,7 +934,6 @@
                             </div>
                         </div>
 
-                        <!-- LA SÉANCE DU JOUR (SE MASQUE S'IL N'Y EN A PAS) -->
                         <div class="goal-item" id="workout-goal-container">
                             <div class="goal-name">
                                 <i class="fa-solid fa-dumbbell" style="color: var(--gold);"></i>
@@ -1175,6 +1173,7 @@
         </div>
     </div>
 
+    <!-- LEVEL UP OVERLAY -->
     <div class="level-up-overlay" id="level-up-modal">
         <div class="level-up-box">
             <h2 style="font-family: 'Orbitron'; font-size: 2rem; color: #fff; text-shadow: 0 0 20px var(--neon-blue); margin-bottom: 8px;">LEVEL UP !</h2>
@@ -1215,7 +1214,7 @@
             targetBodyFat: 12,
             bothTargetsReached: false,
             lastResetWeek: null,
-            friends: [], // Liste des pseudos des amis
+            friends: [],
             stats: { strength: 0, endurance: 0, muscleMass: 0, willpower: 0 },
             musclesWorked: { pecs: false, back: false, shoulders: false, biceps: false, triceps: false, abs: false, legs: false },
             routines: [
@@ -1420,7 +1419,6 @@
             const val = document.getElementById('profile-username-input').value.trim();
             if (!val) return;
 
-            // Vérification si le pseudo est déjà pris par un autre utilisateur
             const { data } = await supabase
                 .from('profiles')
                 .select('id')
@@ -1461,7 +1459,6 @@
                 return;
             }
 
-            // Vérifier existence du joueur dans Supabase
             const { data } = await supabase
                 .from('profiles')
                 .select('username')
@@ -1546,7 +1543,6 @@
                 workoutContainer.style.display = "grid";
                 workoutLabel.innerText = `Séance : ${todayRoutine.name}`;
             } else {
-                // Masquer la séance si aucun entraînement n'est prévu aujourd'hui
                 workoutContainer.style.display = "none";
             }
 
@@ -1640,7 +1636,7 @@
             document.getElementById('chk-workout').checked = state.workoutDone;
 
             const todayRoutine = getTodayRoutine();
-            const workoutValid = todayRoutine ? state.workoutDone : true; // Si pas de séance, la quête ne bloque pas la validation
+            const workoutValid = todayRoutine ? state.workoutDone : true;
 
             const isReady = state.creatineDone && state.gripDone && state.steps >= 10000 && workoutValid && !state.questClaimed;
             document.getElementById('btn-claim-quest').disabled = !isReady;
@@ -2022,7 +2018,9 @@
             document.getElementById(`tab-${tabId}`).classList.add('active');
             
             const btnMap = { profile: 0, friends: 1, status: 2, quest: 3, workout: 4, weighin: 5 };
-            document.querySelectorAll('.nav-btn')[btnMap[tabId]].classList.add('active');
+            if (document.querySelectorAll('.nav-btn')[btnMap[tabId]]) {
+                document.querySelectorAll('.nav-btn')[btnMap[tabId]].classList.add('active');
+            }
         }
 
         window.onload = async () => {
